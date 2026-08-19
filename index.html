@@ -190,19 +190,36 @@
 
     /* Shooting star */
     @keyframes shoot {
-      0% { transform: translateX(0) translateY(0) rotate(-15deg); opacity: 0; }
-      10% { opacity: 1; }
-      90% { opacity: 1; }
-      100% { transform: translateX(-110vw) translateY(40vh) rotate(-15deg); opacity: 0; }
+      0% { transform: translateX(0) translateY(0) rotate(-22deg); opacity: 0; }
+      5% { opacity: 1; }
+      85% { opacity: 1; }
+      100% { transform: translateX(-120vw) translateY(55vh) rotate(-22deg); opacity: 0; }
     }
-    html.dark #shooting-star {
-      animation: shoot 3.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
-      animation-delay: 1.2s;
-      opacity: 1;
+    #shooting-star {
+      width: 260px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent 0%, rgba(165, 243, 252, 0.9) 30%, rgba(34, 211, 238, 1) 55%, rgba(255, 255, 255, 0.95) 70%, transparent 100%);
+      border-radius: 999px;
+      box-shadow: 0 0 20px rgba(34, 211, 238, 0.6), 0 0 60px rgba(34, 211, 238, 0.25);
+      opacity: 0;
+    }
+    #shooting-star::before {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 0 14px 3px rgba(34, 211, 238, 0.9), 0 0 30px 8px rgba(34, 211, 238, 0.4);
+    }
+    #shooting-star.active {
+      animation: shoot 1.4s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
     }
     html:not(.dark) #shooting-star {
-      animation: none;
-      opacity: 0;
+      display: none;
     }
 
     /* Star field */
@@ -459,20 +476,7 @@
         { category: "领域方向", categoryEn: "Domains", icon: "target", type: "badge", items: ["AI 教育", "效率工具", "科研助手", "知识库", "人机交互"] }
       ],
       experience: [
-        { id: "campus", label: { zh: "校园经历", en: "Campus" }, icon: "school", items: [
-          {
-            title: "阳光花园·学习乐园",
-            subtitle: "产品负责人 & 全栈开发者",
-            date: "2026.07",
-            points: [
-              "从 0 到 1 主导设计并实现一款面向 3-8 岁儿童的响应式综合学习平台，覆盖识字、算术、绘画、科普等互动模块，支持电脑、平板、手机无缝访问",
-              "采用 Flex/Grid 自适应布局与媒体查询，完成 3 端 UI 统一，首屏加载时间优化至 1.2s，跨浏览器兼容性覆盖 Chrome、Safari、Edge，渲染效率提升 35%",
-              "集成 AI 语音评测与个性化学习路径推荐，通过大模型 API 实现儿童发音实时纠正与内容动态推送",
-              "设计卡通化界面与 Lottie 动画交互，严格遵循 WCAG 无障碍色彩对比标准",
-              "独立负责项目需求分析、原型设计、前后端开发，累计迭代 3 个版本"
-            ]
-          }
-        ]}
+        // { id: "campus", label: { zh: "校园经历", en: "Campus" }, icon: "school", items: [] }
       ],
       projects: [
         { id: "all", label: { zh: "全部", en: "All" } },
@@ -883,7 +887,31 @@
         renderExperience(); renderProjects(); renderSkills(); renderEducation();
         lucide.createIcons();
         refreshReveal();
+        startMeteorIfDark();
       });
+    }
+
+    let meteorTimer = null;
+    function triggerMeteor() {
+      if (!isDark) return;
+      const star = $('shooting-star');
+      if (!star) return;
+      star.classList.remove('active');
+      // Force reflow
+      void star.offsetWidth;
+      star.classList.add('active');
+      // Schedule next meteor in 10-30 seconds (long gap, not repetitive)
+      const next = 10000 + Math.random() * 20000;
+      clearTimeout(meteorTimer);
+      meteorTimer = setTimeout(triggerMeteor, next);
+    }
+    function startMeteorIfDark() {
+      clearTimeout(meteorTimer);
+      if (isDark) {
+        setTimeout(triggerMeteor, 1500);
+      } else {
+        $('shooting-star').classList.remove('active');
+      }
     }
 
     function init() {
@@ -898,6 +926,7 @@
       renderHero(); renderHighlights(); renderExperience(); renderProjects(); renderSkills(); renderEducation();
       lucide.createIcons();
       refreshReveal();
+      startMeteorIfDark();
 
       // Back to top
       window.addEventListener('scroll', () => {

@@ -188,37 +188,99 @@
       transition: opacity 1s ease, transform 8s ease-in-out;
     }
 
-    /* Shooting star */
-    @keyframes shoot {
-      0% { transform: translateX(0) translateY(0) rotate(-22deg); opacity: 0; }
+    /* Shooting stars */
+    @keyframes shootMain {
+      0% { transform: translateX(0) translateY(0) rotate(-24deg); opacity: 0; }
+      4% { opacity: 1; }
+      92% { opacity: 1; }
+      100% { transform: translateX(-115vw) translateY(50vh) rotate(-24deg); opacity: 0; }
+    }
+    @keyframes shootSmall {
+      0% { transform: translateX(0) translateY(0) rotate(-20deg); opacity: 0; }
       5% { opacity: 1; }
-      85% { opacity: 1; }
-      100% { transform: translateX(-120vw) translateY(55vh) rotate(-22deg); opacity: 0; }
+      90% { opacity: 1; }
+      100% { transform: translateX(-100vw) translateY(42vh) rotate(-20deg); opacity: 0; }
     }
-    #shooting-star {
-      width: 260px;
-      height: 2px;
-      background: linear-gradient(90deg, transparent 0%, rgba(165, 243, 252, 0.9) 30%, rgba(34, 211, 238, 1) 55%, rgba(255, 255, 255, 0.95) 70%, transparent 100%);
-      border-radius: 999px;
-      box-shadow: 0 0 20px rgba(34, 211, 238, 0.6), 0 0 60px rgba(34, 211, 238, 0.25);
+
+    .meteor {
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
       opacity: 0;
+      border-radius: 999px;
+      transform-origin: right center;
     }
-    #shooting-star::before {
+    /* Main meteor: head on the right, long tail fading to the left */
+    .meteor.main {
+      top: 12%;
+      right: -12%;
+      width: 360px;
+      height: 2.5px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(34, 211, 238, 0.25) 25%,
+        rgba(34, 211, 238, 0.65) 50%,
+        rgba(165, 243, 252, 0.95) 78%,
+        #fff 95%,
+        #fff 100%);
+      box-shadow: 0 0 14px rgba(34, 211, 238, 0.35), 0 0 34px rgba(34, 211, 238, 0.12);
+    }
+    .meteor.main::before {
       content: '';
       position: absolute;
-      right: -4px;
+      right: -1px;
       top: 50%;
       transform: translateY(-50%);
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
       border-radius: 50%;
       background: #fff;
-      box-shadow: 0 0 14px 3px rgba(34, 211, 238, 0.9), 0 0 30px 8px rgba(34, 211, 238, 0.4);
+      box-shadow: 0 0 10px 2px rgba(255,255,255,0.95), 0 0 22px 5px rgba(34, 211, 238, 0.7);
     }
-    #shooting-star.active {
-      animation: shoot 1.4s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+    .meteor.main::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 60px;
+      height: 10px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at right, rgba(255,255,255,0.5) 0%, transparent 70%);
+      filter: blur(3px);
     }
-    html:not(.dark) #shooting-star {
+    .meteor.main.active {
+      animation: shootMain 2.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    /* Small dim meteors */
+    .meteor.small {
+      width: 140px;
+      height: 1.5px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(34, 211, 238, 0.18) 40%,
+        rgba(165, 243, 252, 0.65) 85%,
+        rgba(255,255,255,0.85) 100%);
+      box-shadow: 0 0 8px rgba(34, 211, 238, 0.18);
+    }
+    .meteor.small::before {
+      content: '';
+      position: absolute;
+      right: -1px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 0 6px 1px rgba(34, 211, 238, 0.45);
+    }
+    .meteor.small.active {
+      animation: shootSmall 1.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    html:not(.dark) .meteor {
       display: none;
     }
 
@@ -330,8 +392,10 @@
   <!-- Star field (night only) -->
   <div id="starfield"></div>
 
-  <!-- Shooting star decoration (night only) -->
-  <div id="shooting-star" class="fixed top-16 -right-32 w-48 h-0.5 bg-gradient-to-l from-transparent via-cyan-300 to-transparent opacity-0 pointer-events-none z-0 rotate-[-15deg]"></div>
+  <!-- Shooting stars (night only) -->
+  <div class="meteor main" id="meteor-main"></div>
+  <div class="meteor small" id="meteor-small-1" style="top:22%;right:-8%;"></div>
+  <div class="meteor small" id="meteor-small-2" style="top:35%;right:-5%;"></div>
 
   <!-- Nav -->
   <nav class="nav fixed top-0 inset-x-0 z-50 glass border-b transition-colors duration-700" id="navbar">
@@ -1031,25 +1095,37 @@
     }
 
     let meteorTimer = null;
-    function triggerMeteor() {
+    function animateMeteor(el) {
+      if (!el) return;
+      el.classList.remove('active');
+      void el.offsetWidth;
+      el.classList.add('active');
+    }
+    function triggerMeteorSequence() {
       if (!isDark) return;
-      const star = $('shooting-star');
-      if (!star) return;
-      star.classList.remove('active');
-      // Force reflow
-      void star.offsetWidth;
-      star.classList.add('active');
-      // Schedule next meteor in 10-30 seconds (long gap, not repetitive)
-      const next = 10000 + Math.random() * 20000;
+
+      // Main meteor
+      animateMeteor($('meteor-main'));
+
+      // Maybe spawn small meteors with staggered delays
+      const small1Delay = 1200 + Math.random() * 2200;
+      const small2Delay = small1Delay + 1500 + Math.random() * 2500;
+
+      setTimeout(() => animateMeteor($('meteor-small-1')), small1Delay);
+      setTimeout(() => {
+        if (Math.random() > 0.35) animateMeteor($('meteor-small-2'));
+      }, small2Delay);
+
+      // Schedule next main meteor in 12-28 seconds
+      const next = 12000 + Math.random() * 16000;
       clearTimeout(meteorTimer);
-      meteorTimer = setTimeout(triggerMeteor, next);
+      meteorTimer = setTimeout(triggerMeteorSequence, next);
     }
     function startMeteorIfDark() {
       clearTimeout(meteorTimer);
+      document.querySelectorAll('.meteor').forEach(m => m.classList.remove('active'));
       if (isDark) {
-        setTimeout(triggerMeteor, 1500);
-      } else {
-        $('shooting-star').classList.remove('active');
+        setTimeout(triggerMeteorSequence, 1200);
       }
     }
 

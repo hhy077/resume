@@ -37,7 +37,7 @@
 
     /* Day theme base */
     html:not(.dark) body {
-      background: #f8fafc;
+      background: linear-gradient(160deg, #f0f9ff 0%, #e0f2fe 25%, #f8fafc 55%, #fffbeb 100%);
       color: #334155;
     }
     html.dark body {
@@ -62,11 +62,11 @@
       background-clip: text;
     }
     html:not(.dark) .glow-cyan {
-      background: radial-gradient(circle, rgba(6,182,212,0.12) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(14,165,233,0.22) 0%, transparent 65%);
       filter: blur(100px);
     }
     html:not(.dark) .glow-indigo {
-      background: radial-gradient(circle, rgba(99,102,241,0.10) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(245,158,11,0.16) 0%, transparent 65%);
       filter: blur(100px);
     }
 
@@ -261,6 +261,50 @@
     }
     html.dark .nebula {
       opacity: 0.22;
+    }
+
+    /* Day clouds */
+    .cloud {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(50px);
+      opacity: 0;
+      transition: opacity 1.2s ease;
+      pointer-events: none;
+    }
+    html:not(.dark) .cloud {
+      opacity: 0.55;
+    }
+    @keyframes floatCloud {
+      0%, 100% { transform: translate(0, 0); }
+      33% { transform: translate(18px, -12px); }
+      66% { transform: translate(-10px, 8px); }
+    }
+    .cloud.animated {
+      animation: floatCloud var(--d, 12s) ease-in-out infinite;
+      animation-delay: var(--delay, 0s);
+    }
+
+    /* Day floating particles */
+    .day-particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(14, 165, 233, 0.35);
+      opacity: 0;
+      pointer-events: none;
+    }
+    html:not(.dark) .day-particle {
+      opacity: 1;
+    }
+    @keyframes floatParticle {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      15% { opacity: 0.6; }
+      85% { opacity: 0.6; }
+      100% { transform: translateY(-110vh) translateX(25px); opacity: 0; }
+    }
+    .day-particle.animated {
+      animation: floatParticle var(--d, 18s) linear infinite;
+      animation-delay: var(--delay, 0s);
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -902,12 +946,12 @@
       });
     }
 
-    function generateStarfield() {
+    function generateAtmosphere() {
       const container = $('starfield');
       if (!container) return;
       container.innerHTML = '';
 
-      // Add subtle nebula clouds
+      // Night nebula clouds
       const nebulas = [
         { w: 420, h: 280, x: '8%', y: '12%', color: 'rgba(99,102,241,0.35)' },
         { w: 360, h: 240, x: '72%', y: '62%', color: 'rgba(6,182,212,0.30)' },
@@ -920,7 +964,25 @@
         container.appendChild(el);
       });
 
-      // Generate stars
+      // Day clouds
+      const clouds = [
+        { w: 320, h: 180, x: '5%', y: '18%', color: 'rgba(255,255,255,0.95)' },
+        { w: 260, h: 140, x: '70%', y: '10%', color: 'rgba(255,255,255,0.85)' },
+        { w: 200, h: 120, x: '45%', y: '55%', color: 'rgba(224,242,254,0.85)' },
+        { w: 280, h: 160, x: '78%', y: '72%', color: 'rgba(255,251,235,0.75)' }
+      ];
+      clouds.forEach((c, i) => {
+        const el = document.createElement('div');
+        el.className = 'cloud animated';
+        el.style.cssText = `
+          width:${c.w}px;height:${c.h}px;left:${c.x};top:${c.y};background:${c.color};
+          --d:${(14 + Math.random() * 10).toFixed(1)}s;
+          --delay:${(i * -3).toFixed(1)}s;
+        `;
+        container.appendChild(el);
+      });
+
+      // Generate stars (night)
       const count = window.innerWidth < 768 ? 90 : 150;
       for (let i = 0; i < count; i++) {
         const s = document.createElement('div');
@@ -949,6 +1011,22 @@
           --delay:${(Math.random() * 5).toFixed(1)}s;
         `;
         container.appendChild(s);
+      }
+
+      // Day floating particles
+      const pCount = window.innerWidth < 768 ? 18 : 28;
+      for (let i = 0; i < pCount; i++) {
+        const p = document.createElement('div');
+        const size = 2 + Math.random() * 4;
+        p.className = 'day-particle animated';
+        p.style.cssText = `
+          width:${size}px;height:${size}px;
+          left:${Math.random() * 100}%;
+          top:${100 + Math.random() * 20}%;
+          --d:${(14 + Math.random() * 14).toFixed(1)}s;
+          --delay:${(Math.random() * -18).toFixed(1)}s;
+        `;
+        container.appendChild(p);
       }
     }
 
@@ -984,17 +1062,17 @@
       $('menu-btn').addEventListener('click', () => $('mobile-menu').classList.toggle('hidden'));
       document.querySelectorAll('#mobile-menu a').forEach(a => a.addEventListener('click', () => $('mobile-menu').classList.add('hidden')));
 
-      generateStarfield();
+      generateAtmosphere();
       renderHero(); renderHighlights(); renderExperience(); renderProjects(); renderSkills(); renderEducation();
       lucide.createIcons();
       refreshReveal();
       startMeteorIfDark();
 
-      // Regenerate starfield on resize for density adjustment
+      // Regenerate atmosphere on resize for density adjustment
       let resizeTimer;
       window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(generateStarfield, 250);
+        resizeTimer = setTimeout(generateAtmosphere, 250);
       }, { passive: true });
 
       // Back to top

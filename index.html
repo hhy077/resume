@@ -40,6 +40,10 @@
       background: #f8fafc;
       color: #334155;
     }
+    html.dark body {
+      background: #030712;
+      color: #cbd5e1;
+    }
     html:not(.dark) .glass {
       background: rgba(255, 255, 255, 0.72);
       backdrop-filter: blur(20px);
@@ -85,11 +89,11 @@
       background-clip: text;
     }
     html.dark .glow-cyan {
-      background: radial-gradient(circle, rgba(34,211,238,0.20) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(34,211,238,0.35) 0%, transparent 65%);
       filter: blur(120px);
     }
     html.dark .glow-indigo {
-      background: radial-gradient(circle, rgba(129,140,248,0.18) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(129,140,248,0.30) 0%, transparent 65%);
       filter: blur(120px);
     }
 
@@ -184,6 +188,53 @@
       transition: opacity 1s ease, transform 8s ease-in-out;
     }
 
+    /* Shooting star */
+    @keyframes shoot {
+      0% { transform: translateX(0) translateY(0) rotate(-15deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateX(-110vw) translateY(40vh) rotate(-15deg); opacity: 0; }
+    }
+    html.dark #shooting-star {
+      animation: shoot 3.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+      animation-delay: 1.2s;
+      opacity: 1;
+    }
+    html:not(.dark) #shooting-star {
+      animation: none;
+      opacity: 0;
+    }
+
+    /* Star field */
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    html.dark .stars {
+      opacity: 1;
+      background-image:
+        radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1.5px 1.5px at 40px 70px, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1.5px 1.5px at 160px 120px, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1px 1px at 230px 80px, rgba(255,255,255,0.6), transparent),
+        radial-gradient(2px 2px at 300px 150px, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1px 1px at 380px 60px, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1.5px 1.5px at 450px 110px, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1px 1px at 520px 40px, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1.5px 1.5px at 600px 90px, rgba(255,255,255,0.5), transparent),
+        radial-gradient(2px 2px at 680px 160px, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1px 1px at 750px 50px, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1.5px 1.5px at 820px 130px, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1px 1px at 900px 70px, rgba(255,255,255,0.6), transparent),
+        radial-gradient(2px 2px at 980px 140px, rgba(255,255,255,0.7), transparent);
+      background-size: 1000px 200px;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation: none !important; transition: none !important; }
     }
@@ -204,8 +255,11 @@
   <div class="glow-cyan fixed -top-40 -left-40 w-[600px] h-[600px] rounded-full pointer-events-none z-0 opacity-80"></div>
   <div class="glow-indigo fixed -bottom-40 -right-40 w-[700px] h-[700px] rounded-full pointer-events-none z-0 opacity-80"></div>
 
+  <!-- Star field (night only) -->
+  <div class="stars"></div>
+
   <!-- Shooting star decoration (night only) -->
-  <div id="shooting-star" class="fixed top-20 -right-20 w-32 h-0.5 bg-gradient-to-l from-transparent via-cyan-400 to-transparent opacity-0 pointer-events-none z-0 rotate-[-15deg] transition-opacity duration-1000"></div>
+  <div id="shooting-star" class="fixed top-16 -right-32 w-48 h-0.5 bg-gradient-to-l from-transparent via-cyan-300 to-transparent opacity-0 pointer-events-none z-0 rotate-[-15deg]"></div>
 
   <!-- Nav -->
   <nav class="nav fixed top-0 inset-x-0 z-50 glass border-b transition-colors duration-700" id="navbar">
@@ -509,10 +563,6 @@
 
       // Footer border
       document.querySelector('footer').className = `relative z-10 border-t py-10 text-center text-sm transition-colors duration-700 ${isDark ? 'border-white/10' : 'border-slate-200'}`;
-
-      // Shooting star
-      const star = $('shooting-star');
-      if (star) star.style.opacity = isDark ? '0.6' : '0';
 
       lucide.createIcons();
     }

@@ -26,87 +26,220 @@
   </script>
   <style>
     body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Microsoft YaHei', sans-serif; }
-    .glass {
-      background: rgba(15, 23, 42, 0.6);
+    :root {
+      --glow-cyan: rgba(6,182,212,0.18);
+      --glow-indigo: rgba(99,102,241,0.16);
+    }
+    html.dark {
+      --glow-cyan: rgba(34,211,238,0.22);
+      --glow-indigo: rgba(129,140,248,0.20);
+    }
+
+    /* Day theme base */
+    html:not(.dark) body {
+      background: #f8fafc;
+      color: #334155;
+    }
+    html:not(.dark) .glass {
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      box-shadow: 0 4px 24px -6px rgba(15, 23, 42, 0.06);
+    }
+    html:not(.dark) .glass:hover {
+      border-color: rgba(6, 182, 212, 0.35);
+      box-shadow: 0 16px 40px -10px rgba(6, 182, 212, 0.12);
+    }
+    html:not(.dark) .text-gradient {
+      background: linear-gradient(135deg, #0891b2 0%, #4f46e5 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    html:not(.dark) .glow-cyan {
+      background: radial-gradient(circle, rgba(6,182,212,0.12) 0%, transparent 70%);
+      filter: blur(100px);
+    }
+    html:not(.dark) .glow-indigo {
+      background: radial-gradient(circle, rgba(99,102,241,0.10) 0%, transparent 70%);
+      filter: blur(100px);
+    }
+
+    /* Night theme */
+    html.dark .glass {
+      background: rgba(15, 23, 42, 0.62);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.10);
+      box-shadow: 0 4px 24px -6px rgba(0, 0, 0, 0.3);
     }
-    .glow-cyan {
-      background: radial-gradient(circle, rgba(6,182,212,0.18) 0%, transparent 70%);
-      filter: blur(100px);
+    html.dark .glass:hover {
+      border-color: rgba(34, 211, 238, 0.35);
+      box-shadow: 0 16px 40px -10px rgba(6, 182, 212, 0.14);
     }
-    .glow-indigo {
-      background: radial-gradient(circle, rgba(99,102,241,0.16) 0%, transparent 70%);
-      filter: blur(100px);
-    }
-    .text-gradient {
+    html.dark .text-gradient {
       background: linear-gradient(135deg, #22d3ee 0%, #818cf8 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
+    html.dark .glow-cyan {
+      background: radial-gradient(circle, rgba(34,211,238,0.20) 0%, transparent 70%);
+      filter: blur(120px);
+    }
+    html.dark .glow-indigo {
+      background: radial-gradient(circle, rgba(129,140,248,0.18) 0%, transparent 70%);
+      filter: blur(120px);
+    }
+
     .progress-fill {
       background: linear-gradient(90deg, #06b6d4, #6366f1);
     }
-    .btn-glow:hover {
-      box-shadow: 0 0 24px rgba(34, 211, 238, 0.35);
+    html:not(.dark) .progress-fill {
+      background: linear-gradient(90deg, #0891b2, #4f46e5);
     }
+
+    .btn-glow {
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+    html.dark .btn-glow:hover {
+      box-shadow: 0 0 26px rgba(34, 211, 238, 0.35);
+    }
+    html:not(.dark) .btn-glow:hover {
+      box-shadow: 0 0 26px rgba(8, 145, 178, 0.25);
+    }
+
     .card-hover {
-      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.3s ease;
     }
     .card-hover:hover {
-      transform: translateY(-4px);
-      border-color: rgba(34, 211, 238, 0.35);
-      box-shadow: 0 20px 40px -10px rgba(6, 182, 212, 0.12);
+      transform: translateY(-5px);
     }
-    .hl-card:hover .hl-num {
-      text-shadow: 0 0 28px rgba(34, 211, 238, 0.55);
+
+    /* Entrance animations */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
     }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-40px);
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.92);
+      transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .reveal-scale.visible { opacity: 1; transform: scale(1); }
+
+    .stagger-1 { transition-delay: 0.08s; }
+    .stagger-2 { transition-delay: 0.16s; }
+    .stagger-3 { transition-delay: 0.24s; }
+    .stagger-4 { transition-delay: 0.32s; }
+    .stagger-5 { transition-delay: 0.40s; }
+
+    /* Hero special entrance */
+    .hero-avatar {
+      opacity: 0;
+      transform: scale(0.8) rotate(-8deg);
+      animation: avatarIn 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes avatarIn {
+      to { opacity: 1; transform: scale(1) rotate(0); }
+    }
+    .hero-title {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: slideUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
+    }
+    .hero-sub {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: slideUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.28s forwards;
+    }
+    .hero-text {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: slideUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.40s forwards;
+    }
+    .hero-actions {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: slideUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.52s forwards;
+    }
+    @keyframes slideUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Floating glows */
+    .glow-cyan, .glow-indigo {
+      transition: opacity 1s ease, transform 8s ease-in-out;
+    }
+
     @media (prefers-reduced-motion: reduce) {
-      * { transition: none !important; animation: none !important; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
     }
+
     @media print {
-      body { background: #fff !important; color: #0f172a !important; }
+      html.dark, html:not(.dark) { background: #fff !important; color: #0f172a !important; }
       .no-print, .nav, .back-top, .glow { display: none !important; }
       .glass { background: #fff !important; border-color: #e2e8f0 !important; box-shadow: none !important; }
-      .text-white, .text-slate-200 { color: #0f172a !important; }
-      .text-slate-300, .text-slate-400 { color: #334155 !important; }
+      .text-white, .text-slate-900, .text-slate-200 { color: #0f172a !important; }
+      .text-slate-300, .text-slate-400, .text-slate-500 { color: #334155 !important; }
       .text-cyan-400 { color: #0891b2 !important; }
+      .reveal, .reveal-left, .reveal-scale { opacity: 1 !important; transform: none !important; }
     }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-300 antialiased overflow-x-hidden">
+<body class="antialiased overflow-x-hidden transition-colors duration-700">
   <!-- Ambient glows -->
-  <div class="glow-cyan fixed -top-40 -left-40 w-[600px] h-[600px] rounded-full pointer-events-none z-0"></div>
-  <div class="glow-indigo fixed -bottom-40 -right-40 w-[700px] h-[700px] rounded-full pointer-events-none z-0"></div>
+  <div class="glow-cyan fixed -top-40 -left-40 w-[600px] h-[600px] rounded-full pointer-events-none z-0 opacity-80"></div>
+  <div class="glow-indigo fixed -bottom-40 -right-40 w-[700px] h-[700px] rounded-full pointer-events-none z-0 opacity-80"></div>
+
+  <!-- Shooting star decoration (night only) -->
+  <div id="shooting-star" class="fixed top-20 -right-20 w-32 h-0.5 bg-gradient-to-l from-transparent via-cyan-400 to-transparent opacity-0 pointer-events-none z-0 rotate-[-15deg] transition-opacity duration-1000"></div>
 
   <!-- Nav -->
-  <nav class="fixed top-0 inset-x-0 z-50 glass border-b border-white/10">
+  <nav class="nav fixed top-0 inset-x-0 z-50 glass border-b transition-colors duration-700" id="navbar">
     <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
-      <a href="#hero" class="text-white font-extrabold text-lg tracking-tight">霍华翔</a>
-      <div class="hidden md:flex items-center gap-1 text-sm font-medium text-slate-400">
-        <a href="#highlights" class="px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5 transition-colors">亮点</a>
-        <a href="#experience" class="px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5 transition-colors">经历</a>
-        <a href="#projects" class="px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5 transition-colors">项目</a>
-        <a href="#skills" class="px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5 transition-colors">技能</a>
-        <a href="#education" class="px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5 transition-colors">教育</a>
+      <a href="#hero" class="text-lg font-extrabold tracking-tight transition-colors duration-700 nav-name">霍华翔</a>
+      <div class="hidden md:flex items-center gap-1 text-sm font-medium nav-links">
+        <a href="#highlights" class="px-3 py-2 rounded-lg transition-colors">亮点</a>
+        <a href="#experience" class="px-3 py-2 rounded-lg transition-colors">经历</a>
+        <a href="#projects" class="px-3 py-2 rounded-lg transition-colors">项目</a>
+        <a href="#skills" class="px-3 py-2 rounded-lg transition-colors">技能</a>
+        <a href="#education" class="px-3 py-2 rounded-lg transition-colors">教育</a>
       </div>
       <div class="flex items-center gap-2">
-        <button id="lang-btn" class="w-9 h-9 rounded-full glass flex items-center justify-center text-xs font-bold text-slate-300 hover:text-cyan-400 hover:border-cyan-400/30 transition-colors" title="切换语言">中</button>
-        <button id="theme-btn" class="w-9 h-9 rounded-full glass flex items-center justify-center text-slate-300 hover:text-cyan-400 hover:border-cyan-400/30 transition-colors no-print" title="外观" aria-label="切换外观"><i data-lucide="sun" class="w-4 h-4"></i></button>
-        <button id="print-btn" class="w-9 h-9 rounded-full glass flex items-center justify-center text-slate-300 hover:text-cyan-400 hover:border-cyan-400/30 transition-colors no-print" title="打印 / PDF" aria-label="打印"><i data-lucide="printer" class="w-4 h-4"></i></button>
-        <button id="menu-btn" class="md:hidden w-9 h-9 rounded-full glass flex items-center justify-center text-slate-300" aria-label="菜单"><i data-lucide="menu" class="w-4 h-4"></i></button>
+        <button id="lang-btn" class="w-9 h-9 rounded-full glass flex items-center justify-center text-xs font-bold transition-colors" title="切换语言">中</button>
+        <button id="theme-btn" class="w-9 h-9 rounded-full glass flex items-center justify-center transition-colors no-print" title="切换日间/月间" aria-label="切换日间/月间">
+          <i data-lucide="sun" class="w-4 h-4 theme-day"></i>
+          <i data-lucide="moon" class="w-4 h-4 theme-night hidden"></i>
+        </button>
+        <button id="print-btn" class="w-9 h-9 rounded-full glass flex items-center justify-center transition-colors no-print" title="打印 / 存 PDF" aria-label="打印">
+          <i data-lucide="printer" class="w-4 h-4"></i>
+        </button>
+        <button id="menu-btn" class="md:hidden w-9 h-9 rounded-full glass flex items-center justify-center" aria-label="菜单">
+          <i data-lucide="menu" class="w-4 h-4"></i>
+        </button>
       </div>
     </div>
     <!-- Mobile menu -->
-    <div id="mobile-menu" class="hidden md:hidden glass border-t border-white/10">
-      <div class="max-w-6xl mx-auto px-5 py-3 flex flex-col gap-1 text-sm font-medium text-slate-400">
-        <a href="#highlights" class="px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5">亮点</a>
-        <a href="#experience" class="px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5">经历</a>
-        <a href="#projects" class="px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5">项目</a>
-        <a href="#skills" class="px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5">技能</a>
-        <a href="#education" class="px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5">教育</a>
+    <div id="mobile-menu" class="hidden md:hidden glass border-t transition-colors duration-700">
+      <div class="max-w-6xl mx-auto px-5 py-3 flex flex-col gap-1 text-sm font-medium">
+        <a href="#highlights" class="px-3 py-2 rounded-lg">亮点</a>
+        <a href="#experience" class="px-3 py-2 rounded-lg">经历</a>
+        <a href="#projects" class="px-3 py-2 rounded-lg">项目</a>
+        <a href="#skills" class="px-3 py-2 rounded-lg">技能</a>
+        <a href="#education" class="px-3 py-2 rounded-lg">教育</a>
       </div>
     </div>
   </nav>
@@ -115,26 +248,26 @@
   <header id="hero" class="relative z-10 pt-32 pb-16 md:pt-40 md:pb-24">
     <div class="max-w-6xl mx-auto px-5">
       <div class="flex flex-col md:flex-row gap-8 items-start">
-        <div class="relative shrink-0">
-          <div class="w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-gradient-to-br from-cyan-500 to-indigo-600 flex items-center justify-center text-white text-4xl font-extrabold shadow-2xl shadow-cyan-500/20">
+        <div class="relative shrink-0 hero-avatar">
+          <div class="w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-gradient-to-br from-cyan-500 to-indigo-600 flex items-center justify-center text-white text-4xl font-extrabold shadow-2xl">
             霍
           </div>
           <div class="absolute -inset-1 rounded-2xl bg-gradient-to-br from-cyan-400/30 to-indigo-500/30 blur-lg -z-10"></div>
         </div>
         <div class="flex-1 min-w-0">
-          <h1 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight mb-2">
+          <h1 class="hero-title text-4xl md:text-6xl font-extrabold tracking-tight mb-2 text-slate-900 dark:text-white">
             霍华翔 <span class="text-gradient text-2xl md:text-4xl align-middle ml-1">Huahuoxiang</span>
           </h1>
-          <p class="text-lg md:text-xl text-cyan-400 font-semibold mb-4" data-i18n="role">AI 应用开发者 · 前端工程师 · 智能体设计师</p>
-          <p class="text-slate-400 text-base md:text-lg max-w-3xl leading-relaxed mb-6" data-i18n="summary">
+          <p class="hero-sub text-lg md:text-xl font-semibold mb-4 text-cyan-600 dark:text-cyan-400" data-i18n="role">AI 应用开发者 · 前端工程师 · 智能体设计师</p>
+          <p class="hero-text text-base md:text-lg max-w-3xl leading-relaxed mb-6 text-slate-600 dark:text-slate-400" data-i18n="summary">
             食品科学与工程背景，跨学科深耕人工智能应用开发。擅长将大模型、智能体与前端工程结合，独立交付从需求分析、原型设计到部署运维的全链路产品。关注用户体验、性能优化与无障碍设计，致力于用 AI 技术解决真实场景问题。
           </p>
-          <div id="hero-badges" class="flex flex-wrap gap-2 mb-7"></div>
-          <div class="flex flex-wrap gap-3 no-print">
-            <button id="email-btn" class="btn-glow inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-500 text-slate-950 font-bold text-sm hover:bg-cyan-400 transition-colors">
+          <div id="hero-badges" class="hero-text flex flex-wrap gap-2 mb-7"></div>
+          <div class="hero-actions flex flex-wrap gap-3 no-print">
+            <button id="email-btn" class="btn-glow inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-600 dark:bg-cyan-500 text-white dark:text-slate-950 font-bold text-sm hover:bg-cyan-500 dark:hover:bg-cyan-400">
               <i data-lucide="mail" class="w-4 h-4"></i><span data-i18n="emailMe">复制邮箱</span>
             </button>
-            <a id="tel-btn" href="#" class="btn-glow inline-flex items-center gap-2 px-5 py-2.5 rounded-xl glass text-white font-semibold text-sm hover:bg-white/10 transition-colors">
+            <a id="tel-btn" href="#" class="btn-glow inline-flex items-center gap-2 px-5 py-2.5 rounded-xl glass font-semibold text-sm">
               <i data-lucide="phone" class="w-4 h-4"></i><span data-i18n="callMe">拨打电话</span>
             </a>
           </div>
@@ -147,9 +280,9 @@
     <!-- Highlights -->
     <section id="highlights" class="py-14 md:py-20">
       <div class="max-w-6xl mx-auto px-5">
-        <div class="flex items-center gap-3 mb-8">
-          <i data-lucide="sparkles" class="w-6 h-6 text-cyan-400"></i>
-          <h2 class="text-2xl md:text-3xl font-extrabold text-white" data-i18n="highlights">亮点成果</h2>
+        <div class="reveal flex items-center gap-3 mb-8">
+          <i data-lucide="sparkles" class="w-6 h-6 text-cyan-600 dark:text-cyan-400"></i>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white" data-i18n="highlights">亮点成果</h2>
         </div>
         <div id="highlights-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"></div>
       </div>
@@ -158,11 +291,11 @@
     <!-- Experience -->
     <section id="experience" class="py-14 md:py-20">
       <div class="max-w-6xl mx-auto px-5">
-        <div class="flex items-center gap-3 mb-8">
-          <i data-lucide="briefcase" class="w-6 h-6 text-cyan-400"></i>
-          <h2 class="text-2xl md:text-3xl font-extrabold text-white" data-i18n="experience">经历</h2>
+        <div class="reveal flex items-center gap-3 mb-8">
+          <i data-lucide="briefcase" class="w-6 h-6 text-cyan-600 dark:text-cyan-400"></i>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white" data-i18n="experience">经历</h2>
         </div>
-        <div id="exp-tabs" class="flex flex-wrap gap-2 mb-6" role="tablist" aria-label="经历分类"></div>
+        <div id="exp-tabs" class="reveal flex flex-wrap gap-2 mb-6" role="tablist" aria-label="经历分类"></div>
         <div id="exp-panels"></div>
       </div>
     </section>
@@ -170,11 +303,11 @@
     <!-- Projects -->
     <section id="projects" class="py-14 md:py-20">
       <div class="max-w-6xl mx-auto px-5">
-        <div class="flex items-center gap-3 mb-8">
-          <i data-lucide="folder-code" class="w-6 h-6 text-cyan-400"></i>
-          <h2 class="text-2xl md:text-3xl font-extrabold text-white" data-i18n="projects">项目经历</h2>
+        <div class="reveal flex items-center gap-3 mb-8">
+          <i data-lucide="folder-code" class="w-6 h-6 text-cyan-600 dark:text-cyan-400"></i>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white" data-i18n="projects">项目经历</h2>
         </div>
-        <div id="project-tabs" class="flex flex-wrap gap-2 mb-6" role="tablist" aria-label="项目分类"></div>
+        <div id="project-tabs" class="reveal flex flex-wrap gap-2 mb-6" role="tablist" aria-label="项目分类"></div>
         <div id="project-panels"></div>
       </div>
     </section>
@@ -182,9 +315,9 @@
     <!-- Skills -->
     <section id="skills" class="py-14 md:py-20">
       <div class="max-w-6xl mx-auto px-5">
-        <div class="flex items-center gap-3 mb-8">
-          <i data-lucide="cpu" class="w-6 h-6 text-cyan-400"></i>
-          <h2 class="text-2xl md:text-3xl font-extrabold text-white" data-i18n="skills">技能矩阵</h2>
+        <div class="reveal flex items-center gap-3 mb-8">
+          <i data-lucide="cpu" class="w-6 h-6 text-cyan-600 dark:text-cyan-400"></i>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white" data-i18n="skills">技能矩阵</h2>
         </div>
         <div id="skill-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
       </div>
@@ -193,25 +326,25 @@
     <!-- Education -->
     <section id="education" class="py-14 md:py-20">
       <div class="max-w-6xl mx-auto px-5">
-        <div class="flex items-center gap-3 mb-8">
-          <i data-lucide="graduation-cap" class="w-6 h-6 text-cyan-400"></i>
-          <h2 class="text-2xl md:text-3xl font-extrabold text-white" data-i18n="education">教育与证书</h2>
+        <div class="reveal flex items-center gap-3 mb-8">
+          <i data-lucide="graduation-cap" class="w-6 h-6 text-cyan-600 dark:text-cyan-400"></i>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white" data-i18n="education">教育与证书</h2>
         </div>
-        <div id="edu-card" class="glass rounded-2xl p-6 md:p-8 mb-5"></div>
+        <div id="edu-card" class="reveal glass rounded-2xl p-6 md:p-8 mb-5"></div>
         <div id="cert-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
       </div>
     </section>
   </main>
 
-  <footer class="relative z-10 border-t border-white/10 py-10 text-center text-slate-500 text-sm">
+  <footer class="relative z-10 border-t py-10 text-center text-sm transition-colors duration-700">
     <div class="max-w-6xl mx-auto px-5">
-      <p>© <span id="year"></span> 霍华翔 · 简历最后更新于 <span id="update"></span></p>
-      <p class="mt-1 opacity-70" data-i18n="printTip">打印本页可直接导出 PDF</p>
+      <p class="text-slate-500 dark:text-slate-500">© <span id="year"></span> 霍华翔 · 简历最后更新于 <span id="update"></span></p>
+      <p class="mt-1 opacity-70 text-slate-400 dark:text-slate-500" data-i18n="printTip">打印本页可直接导出 PDF</p>
     </div>
   </footer>
 
-  <button id="back-top" class="fixed right-5 bottom-5 z-50 w-11 h-11 rounded-full glass flex items-center justify-center text-cyan-400 opacity-0 pointer-events-none transition-opacity duration-300 no-print" aria-label="返回顶部"><i data-lucide="arrow-up" class="w-5 h-5"></i></button>
-  <div id="toast" class="fixed left-1/2 bottom-8 -translate-x-1/2 z-50 glass px-5 py-3 rounded-xl text-cyan-400 font-medium text-sm opacity-0 translate-y-3 transition-all duration-300 pointer-events-none flex items-center gap-2">
+  <button id="back-top" class="fixed right-5 bottom-5 z-50 w-11 h-11 rounded-full glass flex items-center justify-center text-cyan-600 dark:text-cyan-400 opacity-0 pointer-events-none transition-all duration-300 no-print" aria-label="返回顶部"><i data-lucide="arrow-up" class="w-5 h-5"></i></button>
+  <div id="toast" class="fixed left-1/2 bottom-8 -translate-x-1/2 z-50 glass px-5 py-3 rounded-xl font-medium text-sm opacity-0 translate-y-3 transition-all duration-300 pointer-events-none flex items-center gap-2 text-cyan-600 dark:text-cyan-400">
     <i data-lucide="check-circle" class="w-4 h-4"></i><span id="toast-msg"></span>
   </div>
 
@@ -229,6 +362,8 @@
         education: "教育与证书",
         printTip: "打印本页可直接导出 PDF",
         copied: "邮箱已复制",
+        day: "日间",
+        night: "月间",
         contact: { phone: "13297873579", email: ["3526873890", "@", "qq.com"], location: "福建·泉州" }
       },
       en: {
@@ -243,6 +378,8 @@
         education: "Education & Certificates",
         printTip: "Print this page to export PDF",
         copied: "Email copied",
+        day: "Day",
+        night: "Moon",
         contact: { phone: "13297873579", email: ["3526873890", "@", "qq.com"], location: "Quanzhou, Fujian, China" }
       },
       highlights: [
@@ -348,12 +485,36 @@
     };
 
     let lang = localStorage.getItem('resume_lang') || 'zh';
+    let isDark = localStorage.getItem('resume_theme') === 'dark' || (!localStorage.getItem('resume_theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
     const $ = id => document.getElementById(id);
     const escape = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
     function setText(el, key) {
       const t = resume[lang][key];
       if (t !== undefined) el.textContent = t;
+    }
+
+    function applyThemeStyles() {
+      document.documentElement.classList.toggle('dark', isDark);
+      document.querySelectorAll('.theme-day').forEach(el => el.classList.toggle('hidden', isDark));
+      document.querySelectorAll('.theme-night').forEach(el => el.classList.toggle('hidden', !isDark));
+
+      // Nav text colors
+      const navName = document.querySelector('.nav-name');
+      const navLinks = document.querySelectorAll('.nav-links a');
+      const mobileLinks = document.querySelectorAll('#mobile-menu a');
+      if (navName) navName.className = `nav-name text-lg font-extrabold tracking-tight transition-colors duration-700 ${isDark ? 'text-white' : 'text-slate-900'}`;
+      navLinks.forEach(a => a.className = `px-3 py-2 rounded-lg transition-colors ${isDark ? 'text-slate-400 hover:text-cyan-400 hover:bg-white/5' : 'text-slate-500 hover:text-cyan-600 hover:bg-slate-100'}`);
+      mobileLinks.forEach(a => a.className = `px-3 py-2 rounded-lg ${isDark ? 'text-slate-400 hover:text-cyan-400 hover:bg-white/5' : 'text-slate-500 hover:text-cyan-600 hover:bg-slate-100'}`);
+
+      // Footer border
+      document.querySelector('footer').className = `relative z-10 border-t py-10 text-center text-sm transition-colors duration-700 ${isDark ? 'border-white/10' : 'border-slate-200'}`;
+
+      // Shooting star
+      const star = $('shooting-star');
+      if (star) star.style.opacity = isDark ? '0.6' : '0';
+
+      lucide.createIcons();
     }
 
     function renderHero() {
@@ -372,18 +533,18 @@
         { icon: 'code-2', text: lang === 'zh' ? '前端开发' : 'Frontend' }
       ];
       $('hero-badges').innerHTML = badges.map(b => `
-        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass text-xs font-medium text-slate-300 border border-white/10">
-          <i data-lucide="${b.icon}" class="w-3.5 h-3.5 text-cyan-400"></i>${escape(b.text)}
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass text-xs font-medium ${isDark ? 'text-slate-300 border-white/10' : 'text-slate-600 border-slate-200'}">
+          <i data-lucide="${b.icon}" class="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400"></i>${escape(b.text)}
         </span>
       `).join('');
     }
 
     function renderHighlights() {
-      $('highlights-grid').innerHTML = resume.highlights.map(h => `
-        <div class="hl-card glass rounded-2xl p-5 card-hover cursor-default">
-          <div class="hl-num text-3xl md:text-4xl font-extrabold text-gradient mb-1 transition-all duration-300">${escape(h.num)}</div>
-          <div class="text-sm font-semibold text-slate-200 mb-0.5">${escape(lang === 'en' && h.labelEn ? h.labelEn : h.label)}</div>
-          <div class="text-xs text-slate-500">${escape(lang === 'en' && h.descEn ? h.descEn : h.desc)}</div>
+      $('highlights-grid').innerHTML = resume.highlights.map((h, i) => `
+        <div class="reveal-scale stagger-${Math.min(i+1, 5)} glass rounded-2xl p-5 card-hover cursor-default h-full" data-count="${escape(h.num)}">
+          <div class="hl-num text-3xl md:text-4xl font-extrabold text-gradient mb-1" data-target="${escape(h.num)}">0</div>
+          <div class="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-0.5">${escape(lang === 'en' && h.labelEn ? h.labelEn : h.label)}</div>
+          <div class="text-xs text-slate-400 dark:text-slate-500">${escape(lang === 'en' && h.descEn ? h.descEn : h.desc)}</div>
         </div>
       `).join('');
     }
@@ -395,7 +556,7 @@
       }
       const tid = containerPrefix + '-tab';
       tabs.innerHTML = tabData.map((t, i) => `
-        <button class="tab px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${i === 0 ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'}"
+        <button class="tab reveal-scale stagger-${Math.min(i+1, 5)} px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${i === 0 ? 'bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30' : (isDark ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100')}"
           id="${tid}-${i}" role="tab" aria-selected="${i === 0}" aria-controls="${containerPrefix}-panel-${i}" tabindex="${i === 0 ? 0 : -1}">
           ${t.icon ? `<i data-lucide="${t.icon}" class="w-4 h-4 inline-block align-text-bottom mr-1"></i>` : ''}${escape(t.label[lang])}
         </button>
@@ -407,20 +568,18 @@
       const tabEls = [...tabs.querySelectorAll('[role="tab"]')];
       const panelEls = [...panels.querySelectorAll('[role="tabpanel"]')];
 
+      function updateTabStyle(el, active) {
+        el.className = active
+          ? 'tab px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30'
+          : `tab px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${isDark ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'}`;
+      }
+
       function activate(idx) {
         tabEls.forEach((el, i) => {
           const active = i === idx;
           el.setAttribute('aria-selected', active);
           el.setAttribute('tabindex', active ? 0 : -1);
-          el.className = active
-            ? 'tab px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
-            : 'tab px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 text-slate-400 hover:text-white hover:bg-white/5';
-          const iconName = tabData[i].icon;
-          if (iconName) {
-            el.innerHTML = `<i data-lucide="${iconName}" class="w-4 h-4 inline-block align-text-bottom mr-1"></i>${escape(tabData[i].label[lang])}`;
-          } else {
-            el.textContent = tabData[i].label[lang];
-          }
+          updateTabStyle(el, active);
         });
         panelEls.forEach((el, i) => el.classList.toggle('hidden', i !== idx));
         renderPanel(panelData[idx] || [], panelEls[idx]);
@@ -456,23 +615,23 @@
         containerPrefix: 'exp',
         renderPanel(items, panel) {
           panel.innerHTML = `
-            <div class="relative border-l border-white/10 ml-3 md:ml-4 pl-6 md:pl-8 space-y-6">
+            <div class="relative border-l ${isDark ? 'border-white/10' : 'border-slate-200'} ml-3 md:ml-4 pl-6 md:pl-8 space-y-6">
               ${items.map((item, idx) => `
-                <article class="relative glass rounded-2xl p-5 md:p-6 card-hover">
-                  <span class="absolute -left-[31px] md:-left-[39px] top-7 w-3 h-3 rounded-full bg-cyan-400 ring-4 ring-slate-950"></span>
+                <article class="reveal-left relative glass rounded-2xl p-5 md:p-6 card-hover">
+                  <span class="absolute -left-[31px] md:-left-[39px] top-7 w-3 h-3 rounded-full bg-cyan-500 ring-4 ${isDark ? 'ring-slate-950' : 'ring-slate-50'}"></span>
                   <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-2 mb-3">
                     <div>
-                      <h3 class="text-lg font-bold text-white">${escape(item.title)}</h3>
-                      <p class="text-sm text-cyan-400 font-semibold">${escape(item.subtitle)}</p>
+                      <h3 class="text-lg font-bold text-slate-900 dark:text-white">${escape(item.title)}</h3>
+                      <p class="text-sm text-cyan-600 dark:text-cyan-400 font-semibold">${escape(item.subtitle)}</p>
                     </div>
-                    <span class="inline-flex items-center gap-1 text-xs font-medium text-slate-500 bg-white/5 px-2.5 py-1 rounded-lg whitespace-nowrap">
+                    <span class="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-lg whitespace-nowrap self-start ${isDark ? 'text-slate-500 bg-white/5' : 'text-slate-500 bg-slate-100'}">
                       <i data-lucide="calendar" class="w-3.5 h-3.5"></i>${escape(item.date)}
                     </span>
                   </div>
                   <ul class="space-y-2">
                     ${item.points.map(p => `
-                      <li class="text-sm text-slate-400 leading-relaxed flex gap-2">
-                        <span class="text-cyan-400 mt-1.5 w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0"></span>
+                      <li class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed flex gap-2">
+                        <span class="text-cyan-500 mt-1.5 w-1.5 h-1.5 rounded-full bg-cyan-500 shrink-0"></span>
                         <span>${escape(p)}</span>
                       </li>
                     `).join('')}
@@ -503,30 +662,30 @@
         tabData: projectData, panelData: projectData.map(g => g.list),
         containerPrefix: 'project',
         renderPanel(items, panel) {
-          panel.innerHTML = `<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">${items.map(p => `
-            <article class="glass rounded-2xl p-5 md:p-6 card-hover flex flex-col h-full">
+          panel.innerHTML = `<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">${items.map((p, i) => `
+            <article class="reveal stagger-${Math.min(i+1, 5)} glass rounded-2xl p-5 md:p-6 card-hover flex flex-col h-full">
               <div class="flex items-start justify-between gap-3 mb-3">
                 <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+                  <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-600 dark:text-cyan-400">
                     <i data-lucide="${p.icon}" class="w-5 h-5"></i>
                   </div>
                   <div>
-                    <h3 class="text-base font-bold text-white">${escape(p.title)}</h3>
-                    <p class="text-xs text-cyan-400 font-semibold">${escape(p.role)}</p>
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white">${escape(p.title)}</h3>
+                    <p class="text-xs text-cyan-600 dark:text-cyan-400 font-semibold">${escape(p.role)}</p>
                   </div>
                 </div>
-                <span class="text-xs text-slate-500 font-medium whitespace-nowrap">${escape(p.date)}</span>
+                <span class="text-xs font-medium whitespace-nowrap ${isDark ? 'text-slate-500' : 'text-slate-400'}">${escape(p.date)}</span>
               </div>
               <ul class="space-y-2 flex-1 mb-4">
                 ${p.points.map(pt => `
-                  <li class="text-sm text-slate-400 leading-relaxed flex gap-2">
-                    <span class="text-cyan-400 mt-1.5 w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0"></span>
+                  <li class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed flex gap-2">
+                    <span class="text-cyan-500 mt-1.5 w-1.5 h-1.5 rounded-full bg-cyan-500 shrink-0"></span>
                     <span>${escape(pt)}</span>
                   </li>
                 `).join('')}
               </ul>
               <div class="flex flex-wrap gap-2 mt-auto">
-                ${p.tags.map(t => `<span class="px-2.5 py-1 rounded-full text-xs font-medium bg-cyan-500/10 border border-cyan-500/20 text-cyan-300">${escape(t)}</span>`).join('')}
+                ${p.tags.map(t => `<span class="px-2.5 py-1 rounded-full text-xs font-medium bg-cyan-500/10 border border-cyan-500/20 text-cyan-700 dark:text-cyan-300">${escape(t)}</span>`).join('')}
               </div>
             </article>
           `).join('')}</div>`;
@@ -535,63 +694,60 @@
     }
 
     function renderSkills() {
-      $('skill-grid').innerHTML = resume.skills.map(g => `
-        <div class="glass rounded-2xl p-5 md:p-6 card-hover">
+      $('skill-grid').innerHTML = resume.skills.map((g, gi) => `
+        <div class="reveal glass rounded-2xl p-5 md:p-6 card-hover">
           <div class="flex items-center gap-2 mb-5">
-            <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-600 dark:text-cyan-400">
               <i data-lucide="${g.icon}" class="w-4 h-4"></i>
             </div>
-            <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider">${escape(lang === 'en' && g.categoryEn ? g.categoryEn : g.category)}</h3>
+            <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider">${escape(lang === 'en' && g.categoryEn ? g.categoryEn : g.category)}</h3>
           </div>
-          ${g.type === 'bar' ? `<div class="space-y-4">${g.items.map(i => `
-            <div>
+          ${g.type === 'bar' ? `<div class="space-y-4">${g.items.map((i, idx) => `
+            <div class="reveal-left stagger-${Math.min(idx+1, 5)}">
               <div class="flex justify-between text-sm mb-1.5">
-                <span class="text-slate-300 font-medium">${escape(i.name)}</span>
-                <span class="text-cyan-400 font-semibold">${i.level}%</span>
+                <span class="text-slate-700 dark:text-slate-300 font-medium">${escape(i.name)}</span>
+                <span class="text-cyan-600 dark:text-cyan-400 font-semibold skill-num" data-target="${i.level}">0%</span>
               </div>
-              <div class="h-2 bg-white/5 rounded-full overflow-hidden border border-white/5">
-                <div class="progress-fill h-full rounded-full" style="width:0%" data-w="${i.level}"></div>
+              <div class="h-2 bg-slate-200 dark:bg-white/5 rounded-full overflow-hidden border border-slate-200 dark:border-white/5">
+                <div class="progress-fill h-full rounded-full skill-bar" style="width:0%" data-w="${i.level}"></div>
               </div>
             </div>
-          `).join('')}</div>` : `<div class="flex flex-wrap gap-2">${g.items.map(i => `<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-cyan-500/10 border border-cyan-500/20 text-cyan-300"><i data-lucide="check" class="w-3 h-3"></i>${escape(i)}</span>`).join('')}</div>`}
+          `).join('')}</div>` : `<div class="flex flex-wrap gap-2">${g.items.map(i => `<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-cyan-500/10 border border-cyan-500/20 text-cyan-700 dark:text-cyan-300"><i data-lucide="check" class="w-3 h-3"></i>${escape(i)}</span>`).join('')}</div>`}
         </div>
       `).join('');
-      setTimeout(() => {
-        document.querySelectorAll('.progress-fill').forEach(el => el.style.width = el.dataset.w + '%');
-      }, 120);
     }
 
     function renderEducation() {
       const e = resume.education;
       let details = [];
-      if (e.courses) details.push(`<span class="inline-flex items-center gap-1"><i data-lucide="book-marked" class="w-3.5 h-3.5 text-cyan-400"></i>${escape(e.courses)}</span>`);
+      if (e.courses) details.push(`<span class="inline-flex items-center gap-1"><i data-lucide="book-marked" class="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400"></i>${escape(e.courses)}</span>`);
       if (e.gpa) details.push(`GPA: ${escape(e.gpa)}`);
-      if (e.note) details.push(`<span class="inline-flex items-center gap-1"><i data-lucide="lightbulb" class="w-3.5 h-3.5 text-cyan-400"></i>${escape(e.note)}</span>`);
+      if (e.note) details.push(`<span class="inline-flex items-center gap-1"><i data-lucide="lightbulb" class="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400"></i>${escape(e.note)}</span>`);
       $('edu-card').innerHTML = `
         <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-3 mb-3">
           <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-600 dark:text-cyan-400">
               <i data-lucide="graduation-cap" class="w-6 h-6"></i>
             </div>
             <div>
-              <h3 class="text-xl font-extrabold text-white">${escape(e.school)}</h3>
-              <p class="text-sm text-cyan-400 font-semibold">${escape(e.major)}</p>
+              <h3 class="text-xl font-extrabold text-slate-900 dark:text-white">${escape(e.school)}</h3>
+              <p class="text-sm text-cyan-600 dark:text-cyan-400 font-semibold">${escape(e.major)}</p>
             </div>
           </div>
-          <span class="inline-flex items-center gap-1 text-xs font-medium text-slate-500 bg-white/5 px-3 py-1.5 rounded-lg whitespace-nowrap self-start">
+          <span class="inline-flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-lg whitespace-nowrap self-start ${isDark ? 'text-slate-500 bg-white/5' : 'text-slate-500 bg-slate-100'}">
             <i data-lucide="calendar" class="w-3.5 h-3.5"></i>${escape(e.date)}
           </span>
         </div>
-        ${details.length ? `<div class="space-y-2 text-sm text-slate-400 mt-4">${details.map(d => `<div>${d}</div>`).join('')}</div>` : ''}
+        ${details.length ? `<div class="space-y-2 text-sm text-slate-600 dark:text-slate-400 mt-4">${details.map(d => `<div>${d}</div>`).join('')}</div>` : ''}
       `;
-      $('cert-list').innerHTML = resume.certificates.map(c => `
-        <div class="glass rounded-2xl p-4 flex items-center gap-4 card-hover">
-          <div class="w-11 h-11 rounded-full bg-gradient-to-br from-cyan-500/20 to-indigo-500/20 border border-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0">
+      $('cert-list').innerHTML = resume.certificates.map((c, i) => `
+        <div class="reveal-scale stagger-${Math.min(i+1, 5)} glass rounded-2xl p-4 flex items-center gap-4 card-hover">
+          <div class="w-11 h-11 rounded-full bg-gradient-to-br from-cyan-500/20 to-indigo-500/20 border border-cyan-500/20 flex items-center justify-center text-cyan-600 dark:text-cyan-400 shrink-0">
             <i data-lucide="award" class="w-5 h-5"></i>
           </div>
           <div class="min-w-0">
-            <div class="text-sm font-bold text-slate-200 truncate">${escape(c.name)}</div>
-            <div class="text-xs text-slate-500">${escape(c.date)}</div>
+            <div class="text-sm font-bold text-slate-800 dark:text-slate-200 truncate">${escape(c.name)}</div>
+            <div class="text-xs text-slate-400 dark:text-slate-500">${escape(c.date)}</div>
           </div>
         </div>
       `).join('');
@@ -614,16 +770,69 @@
       $('lang-btn').textContent = lang === 'zh' ? '中' : 'En';
       renderHero(); renderExperience(); renderProjects(); renderSkills(); renderEducation();
       lucide.createIcons();
+      refreshReveal();
+    }
+
+    // Scroll reveal + count animation
+    const observerOptions = { threshold: 0.18, rootMargin: '0px 0px -40px 0px' };
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          // Animate numbers inside
+          const nums = entry.target.querySelectorAll('[data-target]');
+          nums.forEach(n => animateNumber(n));
+          const bars = entry.target.querySelectorAll('.skill-bar');
+          bars.forEach(b => setTimeout(() => b.style.width = b.dataset.w + '%', 200));
+        }
+      });
+    }, observerOptions);
+
+    function animateNumber(el) {
+      const target = el.dataset.target;
+      if (!target) return;
+      const isPlus = target.includes('+');
+      const isPercent = target.includes('%');
+      const num = parseFloat(target.replace(/[^0-9.]/g, ''));
+      if (isNaN(num)) {
+        el.textContent = target;
+        return;
+      }
+      const dur = 1200;
+      const start = performance.now();
+      function step(now) {
+        const p = Math.min((now - start) / dur, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const cur = Math.round(num * eased * 10) / 10;
+        let text = Number.isInteger(num) ? Math.round(cur) : cur.toFixed(1);
+        if (isPercent) text += '%';
+        if (isPlus && p === 1) text += '+';
+        el.textContent = text;
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    function refreshReveal() {
+      document.querySelectorAll('.reveal, .reveal-left, .reveal-scale').forEach(el => {
+        revealObserver.observe(el);
+      });
     }
 
     function initTheme() {
       const saved = localStorage.getItem('resume_theme');
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const theme = saved || (prefersDark ? 'dark' : 'light');
-      document.documentElement.classList.toggle('dark', theme === 'dark');
+      isDark = saved ? saved === 'dark' : prefersDark;
+      applyThemeStyles();
+
       $('theme-btn').addEventListener('click', () => {
-        const isDark = document.documentElement.classList.toggle('dark');
+        isDark = !isDark;
         localStorage.setItem('resume_theme', isDark ? 'dark' : 'light');
+        applyThemeStyles();
+        // Re-render components that depend on isDark
+        renderExperience(); renderProjects(); renderSkills(); renderEducation();
+        lucide.createIcons();
+        refreshReveal();
       });
     }
 
@@ -638,10 +847,14 @@
 
       renderHero(); renderHighlights(); renderExperience(); renderProjects(); renderSkills(); renderEducation();
       lucide.createIcons();
+      refreshReveal();
 
+      // Back to top
       window.addEventListener('scroll', () => {
         $('back-top').classList.toggle('opacity-0', window.scrollY <= 300);
         $('back-top').classList.toggle('pointer-events-none', window.scrollY <= 300);
+        // Nav shadow on scroll
+        $('navbar').classList.toggle('shadow-lg', window.scrollY > 10);
       }, { passive: true });
       $('back-top').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
     }

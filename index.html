@@ -188,113 +188,57 @@
       transition: opacity 1s ease, transform 8s ease-in-out;
     }
 
-    /* Shooting stars */
-    @keyframes shootMain {
-      0% { transform: translateX(0) translateY(0) rotate(-24deg); opacity: 0; }
-      3% { opacity: 1; }
-      94% { opacity: 1; }
-      100% { transform: translateX(-115vw) translateY(50vh) rotate(-24deg); opacity: 0; }
-    }
-    @keyframes shootSmall {
-      0% { transform: translateX(0) translateY(0) rotate(-20deg); opacity: 0; }
-      4% { opacity: 1; }
-      92% { opacity: 1; }
-      100% { transform: translateX(-100vw) translateY(42vh) rotate(-20deg); opacity: 0; }
-    }
-    @keyframes tailReveal {
-      0% { clip-path: inset(0 0 0 100%); opacity: 0; }
-      4% { opacity: 1; }
-      55% { clip-path: inset(0 0 0 0); }
-      100% { clip-path: inset(0 0 0 0); opacity: 1; }
-    }
-
+    /* Shooting stars - SVG paint-stroke style */
     .meteor {
       position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
       pointer-events: none;
       z-index: 0;
       opacity: 0;
-      transform-origin: right center;
+      overflow: visible;
     }
-    .meteor-inner {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      transform-origin: right center;
+    .meteor.active {
+      animation: meteorFade 2.6s linear forwards;
     }
-    /* Tail streams out behind the head as meteor moves right-to-left */
+    .meteor.small.active {
+      animation-duration: 1.9s;
+    }
+    @keyframes meteorFade {
+      0% { opacity: 0; }
+      5% { opacity: 1; }
+      95% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
     .meteor-tail {
-      position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      transform-origin: right center;
-      height: 100%;
-      border-radius: 999px;
-      clip-path: inset(0 0 0 100%);
+      stroke-dasharray: var(--len);
+      stroke-dashoffset: var(--len);
     }
     .meteor.active .meteor-tail {
-      animation: tailReveal 2.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+      animation: drawTail 2.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     }
     .meteor.small.active .meteor-tail {
       animation-duration: 1.9s;
     }
+    @keyframes drawTail {
+      to { stroke-dashoffset: 0; }
+    }
 
-    /* Main meteor */
-    .meteor.main {
-      top: 12%;
-      right: -18%;
-      width: 520px;
-      height: 2.5px;
-    }
-    .meteor.main .meteor-tail {
-      width: 520px;
-      background: linear-gradient(90deg,
-        transparent 0%,
-        rgba(34, 211, 238, 0.18) 25%,
-        rgba(34, 211, 238, 0.55) 50%,
-        rgba(165, 243, 252, 0.95) 80%,
-        #fff 100%);
-      box-shadow: 0 0 16px rgba(34, 211, 238, 0.4), 0 0 40px rgba(34, 211, 238, 0.15);
-    }
     .meteor-head {
-      position: absolute;
-      right: -2px;
-      top: 50%;
-      transform: translateY(-50%);
-      border-radius: 50%;
-      background: #fff;
-      z-index: 2;
+      opacity: 0;
     }
-    .meteor.main .meteor-head {
-      width: 5px;
-      height: 5px;
-      box-shadow: 0 0 10px 2px rgba(255,255,255,0.95), 0 0 24px 6px rgba(34, 211, 238, 0.75);
+    .meteor.active .meteor-head {
+      animation: headShow 2.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     }
-    .meteor.main.active {
-      animation: shootMain 2.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    .meteor.small.active .meteor-head {
+      animation-duration: 1.9s;
     }
-
-    /* Small dim meteors */
-    .meteor.small {
-      width: 200px;
-      height: 1.5px;
-    }
-    .meteor.small .meteor-tail {
-      width: 200px;
-      background: linear-gradient(90deg,
-        transparent 0%,
-        rgba(34, 211, 238, 0.12) 40%,
-        rgba(165, 243, 252, 0.6) 85%,
-        rgba(255,255,255,0.9) 100%);
-      box-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
-    }
-    .meteor.small .meteor-head {
-      width: 3px;
-      height: 3px;
-      box-shadow: 0 0 6px 1px rgba(34, 211, 238, 0.5);
-    }
-    .meteor.small.active {
-      animation: shootSmall 1.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    @keyframes headShow {
+      0% { opacity: 0; }
+      5% { opacity: 1; }
+      100% { opacity: 1; }
     }
 
     html:not(.dark) .meteor {
@@ -409,25 +353,73 @@
   <!-- Star field (night only) -->
   <div id="starfield"></div>
 
-  <!-- Shooting stars (night only) -->
-  <div class="meteor main" id="meteor-main">
-    <div class="meteor-inner">
-      <div class="meteor-tail"></div>
-      <div class="meteor-head"></div>
-    </div>
-  </div>
-  <div class="meteor small" id="meteor-small-1" style="top:22%;right:-8%;">
-    <div class="meteor-inner">
-      <div class="meteor-tail"></div>
-      <div class="meteor-head"></div>
-    </div>
-  </div>
-  <div class="meteor small" id="meteor-small-2" style="top:35%;right:-5%;">
-    <div class="meteor-inner">
-      <div class="meteor-tail"></div>
-      <div class="meteor-head"></div>
-    </div>
-  </div>
+  <!-- Shooting stars (night only) - SVG paint-stroke meteors -->
+  <svg class="meteor main" id="meteor-main" viewBox="0 0 100 100" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="grad-meteor-main" x1="100%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="transparent" />
+        <stop offset="25%" stop-color="rgba(34, 211, 238, 0.2)" />
+        <stop offset="55%" stop-color="rgba(34, 211, 238, 0.6)" />
+        <stop offset="90%" stop-color="rgba(165, 243, 252, 0.95)" />
+        <stop offset="100%" stop-color="#fff" />
+      </linearGradient>
+      <filter id="glow-meteor-main" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="1.2" result="blur" />
+        <feMerge>
+          <feMergeNode in="blur" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+    </defs>
+    <line class="meteor-tail" x1="120" y1="-12" x2="-28" y2="72" stroke="url(#grad-meteor-main)" stroke-width="0.55" stroke-linecap="round" vector-effect="non-scaling-stroke" filter="url(#glow-meteor-main)" />
+    <circle class="meteor-head" r="0.8" fill="#fff" filter="url(#glow-meteor-main)">
+      <animateMotion dur="2.6s" begin="indefinite" fill="freeze" path="M120,-12 L-28,72" />
+    </circle>
+  </svg>
+
+  <svg class="meteor small" id="meteor-small-1" viewBox="0 0 100 100" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="grad-meteor-s1" x1="100%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="transparent" />
+        <stop offset="35%" stop-color="rgba(34, 211, 238, 0.12)" />
+        <stop offset="85%" stop-color="rgba(165, 243, 252, 0.65)" />
+        <stop offset="100%" stop-color="rgba(255,255,255,0.9)" />
+      </linearGradient>
+      <filter id="glow-meteor-s1" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="0.8" result="blur" />
+        <feMerge>
+          <feMergeNode in="blur" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+    </defs>
+    <line class="meteor-tail" x1="110" y1="18" x2="-18" y2="58" stroke="url(#grad-meteor-s1)" stroke-width="0.35" stroke-linecap="round" vector-effect="non-scaling-stroke" filter="url(#glow-meteor-s1)" />
+    <circle class="meteor-head" r="0.5" fill="#fff" filter="url(#glow-meteor-s1)">
+      <animateMotion dur="1.9s" begin="indefinite" fill="freeze" path="M110,18 L-18,58" />
+    </circle>
+  </svg>
+
+  <svg class="meteor small" id="meteor-small-2" viewBox="0 0 100 100" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="grad-meteor-s2" x1="100%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="transparent" />
+        <stop offset="35%" stop-color="rgba(34, 211, 238, 0.12)" />
+        <stop offset="85%" stop-color="rgba(165, 243, 252, 0.65)" />
+        <stop offset="100%" stop-color="rgba(255,255,255,0.9)" />
+      </linearGradient>
+      <filter id="glow-meteor-s2" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="0.8" result="blur" />
+        <feMerge>
+          <feMergeNode in="blur" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+    </defs>
+    <line class="meteor-tail" x1="108" y1="34" x2="-14" y2="72" stroke="url(#grad-meteor-s2)" stroke-width="0.35" stroke-linecap="round" vector-effect="non-scaling-stroke" filter="url(#glow-meteor-s2)" />
+    <circle class="meteor-head" r="0.5" fill="#fff" filter="url(#glow-meteor-s2)">
+      <animateMotion dur="1.9s" begin="indefinite" fill="freeze" path="M108,34 L-14,72" />
+    </circle>
+  </svg>
 
   <!-- Nav -->
   <nav class="nav fixed top-0 inset-x-0 z-50 glass border-b transition-colors duration-700" id="navbar">
@@ -1127,11 +1119,24 @@
     }
 
     let meteorTimer = null;
+    function setMeteorLen(el) {
+      const line = el.querySelector('.meteor-tail');
+      if (!line) return;
+      const x1 = parseFloat(line.getAttribute('x1') || 0);
+      const y1 = parseFloat(line.getAttribute('y1') || 0);
+      const x2 = parseFloat(line.getAttribute('x2') || 0);
+      const y2 = parseFloat(line.getAttribute('y2') || 0);
+      const len = Math.hypot(x2 - x1, y2 - y1);
+      el.style.setProperty('--len', len.toFixed(2));
+    }
     function animateMeteor(el) {
       if (!el) return;
+      setMeteorLen(el);
       el.classList.remove('active');
       void el.offsetWidth;
       el.classList.add('active');
+      const anims = el.querySelectorAll('animate, animateMotion');
+      anims.forEach(a => { try { a.beginElement(); } catch(e) {} });
     }
     function triggerMeteorSequence() {
       if (!isDark) return;

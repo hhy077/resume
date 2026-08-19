@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>霍华翔 - 个人简历</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'Microsoft YaHei', 'sans-serif'],
+          },
+          colors: {
+            slate: { 950: '#030712' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Microsoft YaHei', sans-serif; }
+    .glass {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+    }
+    .glow-cyan {
+      background: radial-gradient(circle, rgba(6,182,212,0.18) 0%, transparent 70%);
+      filter: blur(100px);
+    }
+    .glow-indigo {
+      background: radial-gradient(circle, rgba(99,102,241,0.16) 0%, transparent 70%);
+      filter: blur(100px);
+    }
+    .text-gradient {
+      background: linear-gradient(135deg, #22d3ee 0%, #818cf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .progress-fill {
+      background: linear-gradient(90deg, #06b6d4, #6366f1);
+    }
+    .btn-glow:hover {
+      box-shadow: 0 0 24px rgba(34, 211, 238, 0.35);
+    }
+    .card-hover {
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-4px);
+      border-color: rgba(34, 211, 238, 0.35);
+      box-shadow: 0 20px 40px -10px rgba(6, 182, 212, 0.12);
+    }
+    .hl-card:hover .hl-num {
+      text-shadow: 0 0 28px rgba(34, 211, 238, 0.55);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
+    @media print {
+      body { background: #fff !important; color: #0f172a !important; }
+      .no-print, .nav, .back-top, .glow { display: none !important; }
+      .glass { background: #fff !important; border-color: #e2e8f0 !important; box-shadow: none !important; }
+      .text-white, .text-slate-200 { color: #0f172a !important; }
+      .text-slate-300, .text-slate-400 { color: #334155 !important; }
+      .text-cyan-400 { color: #0891b2 !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-300 antialiased overflow-x-hidden">
+  <!-- Ambient glows -->
+  <div class="glow-cyan fixed -top-40 -left-40 w-[600px] h-[600px] rounded-full pointer-events-none z-0"></div>
+  <div class="glow-indigo fixed -bottom-40 -right-40 w-[700px] h-[700px] rounded-full pointer-events-none z-0"></div>
+
+  <!-- Nav -->
+  <nav class="fixed top-0 inset-x-0 z-50 glass border-b border-white/10">
+    <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+      <a href="#hero" class="text-white font-extrabold text-lg tracking-tight">霍华翔</a>
+      <div class="hidden md:flex items-center gap-1 text-sm font-medium text-slate-400">
+        <a href="#highlights" class="px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5 transition-colors">亮点</a>
+        <a href="#experience" class="px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5 transition-colors">经历</a>
+        <a href="#projects" class="px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5 transition-colors">项目</a>
+        <a href="#skills" class="px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5 transition-colors">技能</a>
+        <a href="#education" class="px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5 transition-colors">教育</a>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="lang-btn" class="w-9 h-9 rounded-full glass flex items-center justify-center text-xs font-bold text-slate-300 hover:text-cyan-400 hover:border-cyan-400/30 transition-colors" title="切换语言">中</button>
+        <button id="theme-btn" class="w-9 h-9 rounded-full glass flex items-center justify-center text-slate-300 hover:text-cyan-400 hover:border-cyan-400/30 transition-colors no-print" title="外观" aria-label="切换外观"><i data-lucide="sun" class="w-4 h-4"></i></button>
+        <button id="print-btn" class="w-9 h-9 rounded-full glass flex items-center justify-center text-slate-300 hover:text-cyan-400 hover:border-cyan-400/30 transition-colors no-print" title="打印 / PDF" aria-label="打印"><i data-lucide="printer" class="w-4 h-4"></i></button>
+        <button id="menu-btn" class="md:hidden w-9 h-9 rounded-full glass flex items-center justify-center text-slate-300" aria-label="菜单"><i data-lucide="menu" class="w-4 h-4"></i></button>
+      </div>
+    </div>
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden md:hidden glass border-t border-white/10">
+      <div class="max-w-6xl mx-auto px-5 py-3 flex flex-col gap-1 text-sm font-medium text-slate-400">
+        <a href="#highlights" class="px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5">亮点</a>
+        <a href="#experience" class="px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5">经历</a>
+        <a href="#projects" class="px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5">项目</a>
+        <a href="#skills" class="px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5">技能</a>
+        <a href="#education" class="px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5">教育</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header id="hero" class="relative z-10 pt-32 pb-16 md:pt-40 md:pb-24">
+    <div class="max-w-6xl mx-auto px-5">
+      <div class="flex flex-col md:flex-row gap-8 items-start">
+        <div class="relative shrink-0">
+          <div class="w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-gradient-to-br from-cyan-500 to-indigo-600 flex items-center justify-center text-white text-4xl font-extrabold shadow-2xl shadow-cyan-500/20">
+            霍
+          </div>
+          <div class="absolute -inset-1 rounded-2xl bg-gradient-to-br from-cyan-400/30 to-indigo-500/30 blur-lg -z-10"></div>
+        </div>
+        <div class="flex-1 min-w-0">
+          <h1 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight mb-2">
+            霍华翔 <span class="text-gradient text-2xl md:text-4xl align-middle ml-1">Huahuoxiang</span>
+          </h1>
+          <p class="text-lg md:text-xl text-cyan-400 font-semibold mb-4" data-i18n="role">AI 应用开发者 · 前端工程师 · 智能体设计师</p>
+          <p class="text-slate-400 text-base md:text-lg max-w-3xl leading-relaxed mb-6" data-i18n="summary">
+            食品科学与工程背景，跨学科深耕人工智能应用开发。擅长将大模型、智能体与前端工程结合，独立交付从需求分析、原型设计到部署运维的全链路产品。关注用户体验、性能优化与无障碍设计，致力于用 AI 技术解决真实场景问题。
+          </p>
+          <div id="hero-badges" class="flex flex-wrap gap-2 mb-7"></div>
+          <div class="flex flex-wrap gap-3 no-print">
+            <button id="email-btn" class="btn-glow inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-500 text-slate-950 font-bold text-sm hover:bg-cyan-400 transition-colors">
+              <i data-lucide="mail" class="w-4 h-4"></i><span data-i18n="emailMe">复制邮箱</span>
+            </button>
+            <a id="tel-btn" href="#" class="btn-glow inline-flex items-center gap-2 px-5 py-2.5 rounded-xl glass text-white font-semibold text-sm hover:bg-white/10 transition-colors">
+              <i data-lucide="phone" class="w-4 h-4"></i><span data-i18n="callMe">拨打电话</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="relative z-10">
+    <!-- Highlights -->
+    <section id="highlights" class="py-14 md:py-20">
+      <div class="max-w-6xl mx-auto px-5">
+        <div class="flex items-center gap-3 mb-8">
+          <i data-lucide="sparkles" class="w-6 h-6 text-cyan-400"></i>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-white" data-i18n="highlights">亮点成果</h2>
+        </div>
+        <div id="highlights-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"></div>
+      </div>
+    </section>
+
+    <!-- Experience -->
+    <section id="experience" class="py-14 md:py-20">
+      <div class="max-w-6xl mx-auto px-5">
+        <div class="flex items-center gap-3 mb-8">
+          <i data-lucide="briefcase" class="w-6 h-6 text-cyan-400"></i>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-white" data-i18n="experience">经历</h2>
+        </div>
+        <div id="exp-tabs" class="flex flex-wrap gap-2 mb-6" role="tablist" aria-label="经历分类"></div>
+        <div id="exp-panels"></div>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="py-14 md:py-20">
+      <div class="max-w-6xl mx-auto px-5">
+        <div class="flex items-center gap-3 mb-8">
+          <i data-lucide="folder-code" class="w-6 h-6 text-cyan-400"></i>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-white" data-i18n="projects">项目经历</h2>
+        </div>
+        <div id="project-tabs" class="flex flex-wrap gap-2 mb-6" role="tablist" aria-label="项目分类"></div>
+        <div id="project-panels"></div>
+      </div>
+    </section>
+
+    <!-- Skills -->
+    <section id="skills" class="py-14 md:py-20">
+      <div class="max-w-6xl mx-auto px-5">
+        <div class="flex items-center gap-3 mb-8">
+          <i data-lucide="cpu" class="w-6 h-6 text-cyan-400"></i>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-white" data-i18n="skills">技能矩阵</h2>
+        </div>
+        <div id="skill-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+      </div>
+    </section>
+
+    <!-- Education -->
+    <section id="education" class="py-14 md:py-20">
+      <div class="max-w-6xl mx-auto px-5">
+        <div class="flex items-center gap-3 mb-8">
+          <i data-lucide="graduation-cap" class="w-6 h-6 text-cyan-400"></i>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-white" data-i18n="education">教育与证书</h2>
+        </div>
+        <div id="edu-card" class="glass rounded-2xl p-6 md:p-8 mb-5"></div>
+        <div id="cert-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="relative z-10 border-t border-white/10 py-10 text-center text-slate-500 text-sm">
+    <div class="max-w-6xl mx-auto px-5">
+      <p>© <span id="year"></span> 霍华翔 · 简历最后更新于 <span id="update"></span></p>
+      <p class="mt-1 opacity-70" data-i18n="printTip">打印本页可直接导出 PDF</p>
+    </div>
+  </footer>
+
+  <button id="back-top" class="fixed right-5 bottom-5 z-50 w-11 h-11 rounded-full glass flex items-center justify-center text-cyan-400 opacity-0 pointer-events-none transition-opacity duration-300 no-print" aria-label="返回顶部"><i data-lucide="arrow-up" class="w-5 h-5"></i></button>
+  <div id="toast" class="fixed left-1/2 bottom-8 -translate-x-1/2 z-50 glass px-5 py-3 rounded-xl text-cyan-400 font-medium text-sm opacity-0 translate-y-3 transition-all duration-300 pointer-events-none flex items-center gap-2">
+    <i data-lucide="check-circle" class="w-4 h-4"></i><span id="toast-msg"></span>
+  </div>
+
+  <script>
+    const resume = {
+      zh: {
+        role: "AI 应用开发者 · 前端工程师 · 智能体设计师",
+        summary: "食品科学与工程背景，跨学科深耕人工智能应用开发。擅长将大模型、智能体与前端工程结合，独立交付从需求分析、原型设计到部署运维的全链路产品。关注用户体验、性能优化与无障碍设计，致力于用 AI 技术解决真实场景问题。",
+        emailMe: "复制邮箱",
+        callMe: "拨打电话",
+        highlights: "亮点成果",
+        experience: "经历",
+        projects: "项目经历",
+        skills: "技能矩阵",
+        education: "教育与证书",
+        printTip: "打印本页可直接导出 PDF",
+        copied: "邮箱已复制",
+        contact: { phone: "13297873579", email: ["3526873890", "@", "qq.com"], location: "福建·泉州" }
+      },
+      en: {
+        role: "AI Application Developer · Frontend Engineer · Agent Designer",
+        summary: "With a background in Food Science and Engineering, I specialize in AI application development across disciplines. I excel at combining LLMs, intelligent agents, and frontend engineering to independently deliver end-to-end products from requirements to deployment. Focused on UX, performance, and accessibility.",
+        emailMe: "Copy Email",
+        callMe: "Call Me",
+        highlights: "Highlights",
+        experience: "Experience",
+        projects: "Projects",
+        skills: "Skills",
+        education: "Education & Certificates",
+        printTip: "Print this page to export PDF",
+        copied: "Email copied",
+        contact: { phone: "13297873579", email: ["3526873890", "@", "qq.com"], location: "Quanzhou, Fujian, China" }
+      },
+      highlights: [
+        { num: "35%", label: "渲染效率提升", labelEn: "Rendering boost", desc: "响应式学习平台首屏 1.2s", descEn: "1.2s first paint" },
+        { num: "50%", label: "任务耗时下降", labelEn: "Task time cut", desc: "AI 工作台多 Agent 协作", descEn: "Multi-Agent workflow" },
+        { num: "88%", label: "信息定位准确率", labelEn: "Info accuracy", desc: "文献智能阅读工具", descEn: "Literature AI tool" },
+        { num: "50+", label: "篇学术文献测试", labelEn: "Papers tested", desc: "科研场景落地验证", descEn: "Research validated" },
+        { num: "5", label: "项 AI 能力认证", labelEn: "AI certifications", desc: "训练师 / Prompt / Agent", descEn: "Trainer / Prompt / Agent" }
+      ],
+      skills: [
+        { category: "人工智能", categoryEn: "AI", icon: "brain", type: "bar", items: [
+          { name: "Prompt Engineering", level: 92 },
+          { name: "Agent Orchestration", level: 88 },
+          { name: "数据标注 / 模型评估", level: 85 },
+          { name: "RAG / Embedding / 向量检索", level: 82 }
+        ]},
+        { category: "前端开发", categoryEn: "Frontend", icon: "layout", type: "bar", items: [
+          { name: "HTML5 / CSS3 / 响应式布局", level: 88 },
+          { name: "JavaScript (ES6+)", level: 85 },
+          { name: "性能优化 / 无障碍 / 跨端适配", level: 82 }
+        ]},
+        { category: "工具与平台", categoryEn: "Tools", icon: "wrench", type: "badge", items: ["Python", "LangChain", "Coze", "Dify", "Chroma", "Git", "Figma", "RESTful API"] },
+        { category: "领域方向", categoryEn: "Domains", icon: "target", type: "badge", items: ["AI 教育", "效率工具", "科研助手", "知识库", "人机交互"] }
+      ],
+      experience: [
+        { id: "campus", label: { zh: "校园经历", en: "Campus" }, icon: "school", items: [
+          {
+            title: "阳光花园·学习乐园",
+            subtitle: "产品负责人 & 全栈开发者",
+            date: "2026.07",
+            points: [
+              "从 0 到 1 主导设计并实现一款面向 3-8 岁儿童的响应式综合学习平台，覆盖识字、算术、绘画、科普等互动模块，支持电脑、平板、手机无缝访问",
+              "采用 Flex/Grid 自适应布局与媒体查询，完成 3 端 UI 统一，首屏加载时间优化至 1.2s，跨浏览器兼容性覆盖 Chrome、Safari、Edge，渲染效率提升 35%",
+              "集成 AI 语音评测与个性化学习路径推荐，通过大模型 API 实现儿童发音实时纠正与内容动态推送",
+              "设计卡通化界面与 Lottie 动画交互，严格遵循 WCAG 无障碍色彩对比标准",
+              "独立负责项目需求分析、原型设计、前后端开发，累计迭代 3 个版本"
+            ]
+          }
+        ]}
+      ],
+      projects: [
+        { id: "all", label: { zh: "全部", en: "All" } },
+        { id: "edu", label: { zh: "教育", en: "Education" } },
+        { id: "efficiency", label: { zh: "效率", en: "Efficiency" } },
+        { id: "research", label: { zh: "科研", en: "Research" } }
+      ],
+      projectList: [
+        {
+          title: "阳光花园·学习乐园",
+          role: "产品负责人 & 全栈开发者",
+          date: "2026.07",
+          category: "edu",
+          icon: "book-open",
+          tags: ["HTML5", "CSS3", "JavaScript", "响应式", "AI 语音评测", "Lottie"],
+          points: [
+            "从 0 到 1 主导设计并实现一款面向 3-8 岁儿童的响应式综合学习平台，覆盖识字、算术、绘画、科普等互动模块",
+            "首屏加载时间优化至 1.2s，渲染效率提升 35%，跨浏览器兼容 Chrome / Safari / Edge",
+            "集成 AI 语音评测与个性化学习路径推荐，通过大模型 API 实现儿童发音实时纠正"
+          ]
+        },
+        {
+          title: "个人专属工作台",
+          role: "AI 效率工具开发者",
+          date: "2026.07",
+          category: "efficiency",
+          icon: "bot",
+          tags: ["LLM", "多 Agent 协作", "Prompt 编排", "工具调用", "云部署"],
+          points: [
+            "聚焦个人任务管理、知识检索与日程协同痛点，搭建基于大语言模型的个性化工作台",
+            "设计多智能体协作架构，通过 Prompt 编排与工具调用串联日历、待办、文件搜索等模块，任务处理平均耗时下降 50%",
+            "部署至轻量云服务器，实现数据端到端加密与持久化存储，上线后无故障运行"
+          ]
+        },
+        {
+          title: "文献智能辅助阅读工具",
+          role: "AI 科研工具开发者",
+          date: "2026.07",
+          category: "research",
+          icon: "file-search",
+          tags: ["PDF 解析", "Embedding", "Chroma", "RAG", "大模型 API"],
+          points: [
+            "开发基于大语言模型的智能阅读助手，支持 PDF/网页导入、自动摘要、术语解释、多轮问答",
+            "运用 Embedding 技术与向量数据库构建论文知识库，关键信息定位准确率达 88%，文献阅读速度提升 60%",
+            "内部小组测试中处理中英文学术论文 50+ 篇，科研人员信息整理时间平均缩短 55%"
+          ]
+        }
+      ],
+      education: {
+        school: "泉州师范学院",
+        major: "食品科学与工程 · 本科",
+        date: "2026.09 – 2030.06（预计）",
+        courses: "食品化学、食品微生物学、食品工程原理 等",
+        gpa: null,
+        note: "跨学科探索人工智能与食品科学的融合，自主修读大语言模型、智能体开发、人机交互设计等前沿技术课程"
+      },
+      certificates: [
+        { name: "人工智能训练师（初级）职业证书", date: "2026 年" },
+        { name: "人工智能训练师（高级）职业证书", date: "2026 年" },
+        { name: "Datawhale & 科大讯飞 Prompt Engineer 认证", date: "2026 年" },
+        { name: "Datawhale & 魔搭社区 Agent Engineer 认证", date: "2026 年" },
+        { name: "Datawhale & 文付宝百宝箱 Agent Engineer 能力认证", date: "2026 年" }
+      ]
+    };
+
+    let lang = localStorage.getItem('resume_lang') || 'zh';
+    const $ = id => document.getElementById(id);
+    const escape = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+    function setText(el, key) {
+      const t = resume[lang][key];
+      if (t !== undefined) el.textContent = t;
+    }
+
+    function renderHero() {
+      document.querySelectorAll('[data-i18n]').forEach(el => setText(el, el.dataset.i18n));
+      const c = resume[lang].contact;
+      const email = c.email.join('');
+      $('tel-btn').href = 'tel:' + c.phone;
+      $('email-btn').onclick = e => { e.preventDefault(); copy(email); };
+
+      const badges = [
+        { icon: 'map-pin', text: c.location },
+        { icon: 'phone', text: c.phone },
+        { icon: 'mail', text: email },
+        { icon: 'zap', text: lang === 'zh' ? 'AI 应用' : 'AI Apps' },
+        { icon: 'bot', text: lang === 'zh' ? '智能体' : 'Agents' },
+        { icon: 'code-2', text: lang === 'zh' ? '前端开发' : 'Frontend' }
+      ];
+      $('hero-badges').innerHTML = badges.map(b => `
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass text-xs font-medium text-slate-300 border border-white/10">
+          <i data-lucide="${b.icon}" class="w-3.5 h-3.5 text-cyan-400"></i>${escape(b.text)}
+        </span>
+      `).join('');
+    }
+
+    function renderHighlights() {
+      $('highlights-grid').innerHTML = resume.highlights.map(h => `
+        <div class="hl-card glass rounded-2xl p-5 card-hover cursor-default">
+          <div class="hl-num text-3xl md:text-4xl font-extrabold text-gradient mb-1 transition-all duration-300">${escape(h.num)}</div>
+          <div class="text-sm font-semibold text-slate-200 mb-0.5">${escape(lang === 'en' && h.labelEn ? h.labelEn : h.label)}</div>
+          <div class="text-xs text-slate-500">${escape(lang === 'en' && h.descEn ? h.descEn : h.desc)}</div>
+        </div>
+      `).join('');
+    }
+
+    function buildTabSystem({ tabs, panels, tabData, panelData, renderPanel, containerPrefix }) {
+      if (!tabData || tabData.length === 0) {
+        tabs.closest('section').classList.add('hidden');
+        return;
+      }
+      const tid = containerPrefix + '-tab';
+      tabs.innerHTML = tabData.map((t, i) => `
+        <button class="tab px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${i === 0 ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'}"
+          id="${tid}-${i}" role="tab" aria-selected="${i === 0}" aria-controls="${containerPrefix}-panel-${i}" tabindex="${i === 0 ? 0 : -1}">
+          ${t.icon ? `<i data-lucide="${t.icon}" class="w-4 h-4 inline-block align-text-bottom mr-1"></i>` : ''}${escape(t.label[lang])}
+        </button>
+      `).join('');
+      panels.innerHTML = tabData.map((t, i) => `
+        <div class="tab-panel ${i === 0 ? 'block' : 'hidden'}" id="${containerPrefix}-panel-${i}" role="tabpanel" aria-labelledby="${tid}-${i}"></div>
+      `).join('');
+
+      const tabEls = [...tabs.querySelectorAll('[role="tab"]')];
+      const panelEls = [...panels.querySelectorAll('[role="tabpanel"]')];
+
+      function activate(idx) {
+        tabEls.forEach((el, i) => {
+          const active = i === idx;
+          el.setAttribute('aria-selected', active);
+          el.setAttribute('tabindex', active ? 0 : -1);
+          el.className = active
+            ? 'tab px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
+            : 'tab px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 text-slate-400 hover:text-white hover:bg-white/5';
+          const iconName = tabData[i].icon;
+          if (iconName) {
+            el.innerHTML = `<i data-lucide="${iconName}" class="w-4 h-4 inline-block align-text-bottom mr-1"></i>${escape(tabData[i].label[lang])}`;
+          } else {
+            el.textContent = tabData[i].label[lang];
+          }
+        });
+        panelEls.forEach((el, i) => el.classList.toggle('hidden', i !== idx));
+        renderPanel(panelData[idx] || [], panelEls[idx]);
+        lucide.createIcons();
+      }
+
+      tabEls.forEach((el, i) => {
+        el.addEventListener('click', () => { activate(i); el.focus(); });
+        el.addEventListener('keydown', e => {
+          let ni = i;
+          if (e.key === 'ArrowRight') ni = (i + 1) % tabEls.length;
+          else if (e.key === 'ArrowLeft') ni = (i - 1 + tabEls.length) % tabEls.length;
+          else if (e.key === 'Home') ni = 0;
+          else if (e.key === 'End') ni = tabEls.length - 1;
+          else return;
+          e.preventDefault();
+          activate(ni);
+          tabEls[ni].focus();
+        });
+      });
+      activate(0);
+    }
+
+    function renderExperience() {
+      const data = resume.experience.filter(g => g.items && g.items.length);
+      if (data.length === 0) {
+        $('experience').classList.add('hidden');
+        return;
+      }
+      buildTabSystem({
+        tabs: $('exp-tabs'), panels: $('exp-panels'),
+        tabData: data, panelData: data.map(g => g.items),
+        containerPrefix: 'exp',
+        renderPanel(items, panel) {
+          panel.innerHTML = `
+            <div class="relative border-l border-white/10 ml-3 md:ml-4 pl-6 md:pl-8 space-y-6">
+              ${items.map((item, idx) => `
+                <article class="relative glass rounded-2xl p-5 md:p-6 card-hover">
+                  <span class="absolute -left-[31px] md:-left-[39px] top-7 w-3 h-3 rounded-full bg-cyan-400 ring-4 ring-slate-950"></span>
+                  <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-2 mb-3">
+                    <div>
+                      <h3 class="text-lg font-bold text-white">${escape(item.title)}</h3>
+                      <p class="text-sm text-cyan-400 font-semibold">${escape(item.subtitle)}</p>
+                    </div>
+                    <span class="inline-flex items-center gap-1 text-xs font-medium text-slate-500 bg-white/5 px-2.5 py-1 rounded-lg whitespace-nowrap">
+                      <i data-lucide="calendar" class="w-3.5 h-3.5"></i>${escape(item.date)}
+                    </span>
+                  </div>
+                  <ul class="space-y-2">
+                    ${item.points.map(p => `
+                      <li class="text-sm text-slate-400 leading-relaxed flex gap-2">
+                        <span class="text-cyan-400 mt-1.5 w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0"></span>
+                        <span>${escape(p)}</span>
+                      </li>
+                    `).join('')}
+                  </ul>
+                </article>
+              `).join('')}
+            </div>
+          `;
+        }
+      });
+    }
+
+    function renderProjects() {
+      const data = resume.projects;
+      const projectData = data.map(cat => {
+        const list = cat.id === 'all'
+          ? resume.projectList
+          : resume.projectList.filter(p => p.category === cat.id);
+        return { ...cat, list };
+      }).filter(cat => cat.list.length);
+
+      if (projectData.length === 0) {
+        $('projects').classList.add('hidden');
+        return;
+      }
+      buildTabSystem({
+        tabs: $('project-tabs'), panels: $('project-panels'),
+        tabData: projectData, panelData: projectData.map(g => g.list),
+        containerPrefix: 'project',
+        renderPanel(items, panel) {
+          panel.innerHTML = `<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">${items.map(p => `
+            <article class="glass rounded-2xl p-5 md:p-6 card-hover flex flex-col h-full">
+              <div class="flex items-start justify-between gap-3 mb-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+                    <i data-lucide="${p.icon}" class="w-5 h-5"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-base font-bold text-white">${escape(p.title)}</h3>
+                    <p class="text-xs text-cyan-400 font-semibold">${escape(p.role)}</p>
+                  </div>
+                </div>
+                <span class="text-xs text-slate-500 font-medium whitespace-nowrap">${escape(p.date)}</span>
+              </div>
+              <ul class="space-y-2 flex-1 mb-4">
+                ${p.points.map(pt => `
+                  <li class="text-sm text-slate-400 leading-relaxed flex gap-2">
+                    <span class="text-cyan-400 mt-1.5 w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0"></span>
+                    <span>${escape(pt)}</span>
+                  </li>
+                `).join('')}
+              </ul>
+              <div class="flex flex-wrap gap-2 mt-auto">
+                ${p.tags.map(t => `<span class="px-2.5 py-1 rounded-full text-xs font-medium bg-cyan-500/10 border border-cyan-500/20 text-cyan-300">${escape(t)}</span>`).join('')}
+              </div>
+            </article>
+          `).join('')}</div>`;
+        }
+      });
+    }
+
+    function renderSkills() {
+      $('skill-grid').innerHTML = resume.skills.map(g => `
+        <div class="glass rounded-2xl p-5 md:p-6 card-hover">
+          <div class="flex items-center gap-2 mb-5">
+            <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+              <i data-lucide="${g.icon}" class="w-4 h-4"></i>
+            </div>
+            <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider">${escape(lang === 'en' && g.categoryEn ? g.categoryEn : g.category)}</h3>
+          </div>
+          ${g.type === 'bar' ? `<div class="space-y-4">${g.items.map(i => `
+            <div>
+              <div class="flex justify-between text-sm mb-1.5">
+                <span class="text-slate-300 font-medium">${escape(i.name)}</span>
+                <span class="text-cyan-400 font-semibold">${i.level}%</span>
+              </div>
+              <div class="h-2 bg-white/5 rounded-full overflow-hidden border border-white/5">
+                <div class="progress-fill h-full rounded-full" style="width:0%" data-w="${i.level}"></div>
+              </div>
+            </div>
+          `).join('')}</div>` : `<div class="flex flex-wrap gap-2">${g.items.map(i => `<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-cyan-500/10 border border-cyan-500/20 text-cyan-300"><i data-lucide="check" class="w-3 h-3"></i>${escape(i)}</span>`).join('')}</div>`}
+        </div>
+      `).join('');
+      setTimeout(() => {
+        document.querySelectorAll('.progress-fill').forEach(el => el.style.width = el.dataset.w + '%');
+      }, 120);
+    }
+
+    function renderEducation() {
+      const e = resume.education;
+      let details = [];
+      if (e.courses) details.push(`<span class="inline-flex items-center gap-1"><i data-lucide="book-marked" class="w-3.5 h-3.5 text-cyan-400"></i>${escape(e.courses)}</span>`);
+      if (e.gpa) details.push(`GPA: ${escape(e.gpa)}`);
+      if (e.note) details.push(`<span class="inline-flex items-center gap-1"><i data-lucide="lightbulb" class="w-3.5 h-3.5 text-cyan-400"></i>${escape(e.note)}</span>`);
+      $('edu-card').innerHTML = `
+        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-3 mb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+              <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-extrabold text-white">${escape(e.school)}</h3>
+              <p class="text-sm text-cyan-400 font-semibold">${escape(e.major)}</p>
+            </div>
+          </div>
+          <span class="inline-flex items-center gap-1 text-xs font-medium text-slate-500 bg-white/5 px-3 py-1.5 rounded-lg whitespace-nowrap self-start">
+            <i data-lucide="calendar" class="w-3.5 h-3.5"></i>${escape(e.date)}
+          </span>
+        </div>
+        ${details.length ? `<div class="space-y-2 text-sm text-slate-400 mt-4">${details.map(d => `<div>${d}</div>`).join('')}</div>` : ''}
+      `;
+      $('cert-list').innerHTML = resume.certificates.map(c => `
+        <div class="glass rounded-2xl p-4 flex items-center gap-4 card-hover">
+          <div class="w-11 h-11 rounded-full bg-gradient-to-br from-cyan-500/20 to-indigo-500/20 border border-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0">
+            <i data-lucide="award" class="w-5 h-5"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="text-sm font-bold text-slate-200 truncate">${escape(c.name)}</div>
+            <div class="text-xs text-slate-500">${escape(c.date)}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function copy(text) {
+      navigator.clipboard.writeText(text).then(() => showToast(resume[lang].copied)).catch(() => {
+        const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta); showToast(resume[lang].copied);
+      });
+    }
+    function showToast(msg) {
+      const t = $('toast'); $('toast-msg').textContent = msg;
+      t.classList.remove('opacity-0', 'translate-y-3');
+      setTimeout(() => t.classList.add('opacity-0', 'translate-y-3'), 2200);
+    }
+
+    function applyLang() {
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+      $('lang-btn').textContent = lang === 'zh' ? '中' : 'En';
+      renderHero(); renderExperience(); renderProjects(); renderSkills(); renderEducation();
+      lucide.createIcons();
+    }
+
+    function initTheme() {
+      const saved = localStorage.getItem('resume_theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = saved || (prefersDark ? 'dark' : 'light');
+      document.documentElement.classList.toggle('dark', theme === 'dark');
+      $('theme-btn').addEventListener('click', () => {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('resume_theme', isDark ? 'dark' : 'light');
+      });
+    }
+
+    function init() {
+      initTheme();
+      $('year').textContent = new Date().getFullYear();
+      $('update').textContent = new Date().toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US');
+      $('print-btn').addEventListener('click', () => window.print());
+      $('lang-btn').addEventListener('click', () => { lang = lang === 'zh' ? 'en' : 'zh'; localStorage.setItem('resume_lang', lang); applyLang(); });
+      $('menu-btn').addEventListener('click', () => $('mobile-menu').classList.toggle('hidden'));
+      document.querySelectorAll('#mobile-menu a').forEach(a => a.addEventListener('click', () => $('mobile-menu').classList.add('hidden')));
+
+      renderHero(); renderHighlights(); renderExperience(); renderProjects(); renderSkills(); renderEducation();
+      lucide.createIcons();
+
+      window.addEventListener('scroll', () => {
+        $('back-top').classList.toggle('opacity-0', window.scrollY <= 300);
+        $('back-top').classList.toggle('pointer-events-none', window.scrollY <= 300);
+      }, { passive: true });
+      $('back-top').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    }
+
+    init();
+  </script>
+</body>
+</html>

@@ -356,6 +356,11 @@
       background: linear-gradient(135deg, #06b6d4, #6366f1);
       box-shadow: 0 0 40px rgba(6,182,212,0.35);
       animation: introFloat 3s ease-in-out infinite;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+    .intro-avatar:active {
+      transform: scale(0.92) rotate(10deg);
     }
     html.dark .intro-avatar {
       background: linear-gradient(135deg, #22d3ee, #818cf8);
@@ -363,13 +368,20 @@
     }
     @keyframes introFloat {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
+      50% { transform: translateY(-10px); }
+    }
+    .intro-avatar-ring {
+      border: 2px solid rgba(255,255,255,0.45);
+      animation: avatarRing 2s ease-out infinite;
+    }
+    @keyframes avatarRing {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(1.45); opacity: 0; }
     }
     .intro-title {
       color: #0f172a;
       opacity: 0;
-      transform: translateY(20px);
-      animation: introFadeUp 0.8s ease-out 0.2s forwards;
+      animation: introFadeIn 0.6s ease-out 0.2s forwards;
     }
     html.dark .intro-title {
       background: linear-gradient(135deg, #22d3ee 0%, #818cf8 100%);
@@ -377,38 +389,69 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
+    .intro-cursor {
+      display: inline-block;
+      width: 3px;
+      margin-left: 2px;
+      animation: blink 1s step-end infinite;
+      color: inherit;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
     .intro-subtitle {
       color: #475569;
       opacity: 0;
-      transform: translateY(20px);
-      animation: introFadeUp 0.8s ease-out 0.4s forwards;
+      animation: introFadeIn 0.6s ease-out 0.4s forwards;
+      transition: opacity 0.3s ease;
     }
     html.dark .intro-subtitle {
       color: #94a3b8;
     }
-    @keyframes introFadeUp {
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes introFadeIn {
+      to { opacity: 1; }
     }
     .intro-btn {
       background: linear-gradient(135deg, #06b6d4, #6366f1);
       color: white;
-      box-shadow: 0 10px 30px -10px rgba(6,182,212,0.4);
+      box-shadow: 0 0 30px rgba(6,182,212,0.35), inset 0 0 20px rgba(255,255,255,0.2);
       opacity: 0;
-      transform: translateY(20px);
-      animation: introFadeUp 0.8s ease-out 0.6s forwards;
+      animation: introPop 0.6s ease-out 0.8s forwards, btnGlow 2.5s ease-in-out infinite;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
     .intro-btn:hover {
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 16px 40px -10px rgba(6,182,212,0.5);
+      transform: scale(1.08);
+      box-shadow: 0 0 45px rgba(6,182,212,0.55), inset 0 0 25px rgba(255,255,255,0.3);
+    }
+    .intro-btn:active {
+      transform: scale(0.95);
     }
     html.dark .intro-btn {
       background: linear-gradient(135deg, #22d3ee, #818cf8);
-      box-shadow: 0 10px 30px -10px rgba(34,211,238,0.3);
+      box-shadow: 0 0 35px rgba(34,211,238,0.35), inset 0 0 20px rgba(255,255,255,0.15);
+    }
+    html.dark .intro-btn:hover {
+      box-shadow: 0 0 55px rgba(34,211,238,0.55), inset 0 0 25px rgba(255,255,255,0.25);
+    }
+    @keyframes introPop {
+      0% { opacity: 0; transform: scale(0.5); }
+      70% { transform: scale(1.1); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @keyframes btnGlow {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.15); }
+    }
+    .intro-ring {
+      border: 2px solid rgba(255,255,255,0.55);
+      animation: btnRing 2s ease-out infinite;
+    }
+    @keyframes btnRing {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(1.6); opacity: 0; }
     }
     .intro-hint {
       color: #475569;
       opacity: 0;
-      animation: introFadeUp 0.8s ease-out 0.8s forwards;
+      animation: introFadeIn 0.6s ease-out 1s forwards;
     }
     html.dark .intro-hint {
       color: #94a3b8;
@@ -427,6 +470,17 @@
       10% { opacity: 1; }
       90% { opacity: 0.6; }
       100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+    }
+    .intro-burst-particle {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      background: #22d3ee;
+      box-shadow: 0 0 8px rgba(34,211,238,0.8);
+    }
+    @keyframes burstFly {
+      0% { transform: translate(0,0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
     }
     #intro-screen.hidden-out {
       opacity: 0;
@@ -449,21 +503,23 @@
   <div id="intro-screen" class="fixed inset-0 z-[100] flex items-center justify-center transition-opacity duration-700">
     <div class="intro-backdrop absolute inset-0 pointer-events-none"></div>
     <div class="intro-particles absolute inset-0 pointer-events-none overflow-hidden" id="intro-particles"></div>
-    <div class="relative z-10 text-center px-6 max-w-lg">
-      <div class="intro-avatar mb-6 mx-auto w-24 h-24 rounded-full flex items-center justify-center text-4xl font-bold text-white shadow-2xl select-none">
+    <div class="intro-burst absolute inset-0 pointer-events-none overflow-hidden" id="intro-burst"></div>
+    <div class="relative z-10 text-center px-6 max-w-lg select-none">
+      <div id="intro-avatar" class="intro-avatar mb-8 mx-auto w-28 h-28 rounded-full flex items-center justify-center text-5xl font-bold text-white shadow-2xl relative">
         霍
+        <span class="intro-avatar-ring absolute inset-0 rounded-full pointer-events-none"></span>
       </div>
-      <h1 class="intro-title text-5xl md:text-7xl font-extrabold tracking-tight mb-4">
-        霍华翔
+      <h1 class="intro-title text-5xl md:text-7xl font-extrabold tracking-tight mb-4 min-h-[1.2em]">
+        <span id="intro-typed"></span><span class="intro-cursor">|</span>
       </h1>
-      <p class="intro-subtitle text-lg md:text-xl mb-10">
+      <p class="intro-subtitle text-lg md:text-xl mb-12 min-h-[1.6em]" id="intro-subtitle">
         个人简历 · Portfolio
       </p>
-      <button id="enter-btn" class="intro-btn group relative inline-flex items-center gap-3 px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 cursor-pointer">
-        <span>点击进入</span>
-        <i data-lucide="arrow-right" class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"></i>
+      <button id="enter-btn" class="intro-btn group relative w-20 h-20 rounded-full flex items-center justify-center mx-auto">
+        <i data-lucide="sparkles" class="w-8 h-8 text-white"></i>
+        <span class="intro-ring absolute inset-0 rounded-full pointer-events-none"></span>
       </button>
-      <p class="intro-hint mt-6 text-sm">点击按钮或按 Enter 键进入</p>
+      <p class="intro-hint mt-8 text-sm">点击能量球解锁简历 ✨</p>
     </div>
   </div>
 
@@ -1291,10 +1347,15 @@
       const introScreen = $('intro-screen');
       const enterBtn = $('enter-btn');
       const particles = $('intro-particles');
+      const burst = $('intro-burst');
+      const typed = $('intro-typed');
+      const subtitle = $('intro-subtitle');
+      const avatar = $('intro-avatar');
       if (!introScreen) return;
 
+      // Floating ambient particles
       if (particles) {
-        const count = window.matchMedia('(pointer: coarse)').matches ? 20 : 35;
+        const count = window.matchMedia('(pointer: coarse)').matches ? 18 : 32;
         for (let i = 0; i < count; i++) {
           const p = document.createElement('div');
           p.className = 'intro-particle';
@@ -1309,7 +1370,82 @@
         }
       }
 
+      // Typing effect for name
+      const name = '霍华翔';
+      let nameIdx = 0;
+      function typeName() {
+        if (typed && nameIdx <= name.length) {
+          typed.textContent = name.slice(0, nameIdx);
+          nameIdx++;
+          if (nameIdx <= name.length) {
+            setTimeout(typeName, 140 + Math.random() * 80);
+          }
+        }
+      }
+      setTimeout(typeName, 500);
+
+      // Cycling fun subtitles
+      const subtitles = [
+        '个人简历 · Portfolio',
+        '一名热爱技术的开发者 ✨',
+        '正在加载精彩经历...',
+        '点击能量球，解锁全文 →',
+        '准备好被惊艳到了吗？'
+      ];
+      let subIdx = 0;
+      const subInterval = setInterval(() => {
+        if (!subtitle || introScreen.classList.contains('hidden-out')) {
+          clearInterval(subInterval);
+          return;
+        }
+        subtitle.style.opacity = 0;
+        setTimeout(() => {
+          subIdx = (subIdx + 1) % subtitles.length;
+          subtitle.textContent = subtitles[subIdx];
+          subtitle.style.opacity = 1;
+        }, 300);
+      }, 2600);
+
+      // Avatar bounce on click
+      if (avatar) {
+        avatar.addEventListener('click', () => {
+          avatar.style.animation = 'none';
+          void avatar.offsetWidth;
+          avatar.style.animation = 'introFloat 0.5s ease-out';
+          setTimeout(() => {
+            avatar.style.animation = '';
+          }, 500);
+        });
+      }
+
+      function createBurst() {
+        if (!burst || !enterBtn) return;
+        const rect = enterBtn.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const colors = ['#22d3ee', '#818cf8', '#ffffff', '#06b6d4'];
+        for (let i = 0; i < 40; i++) {
+          const p = document.createElement('div');
+          p.className = 'intro-burst-particle';
+          const size = 3 + Math.random() * 7;
+          p.style.width = size + 'px';
+          p.style.height = size + 'px';
+          p.style.left = cx + 'px';
+          p.style.top = cy + 'px';
+          p.style.background = colors[Math.floor(Math.random() * colors.length)];
+          const angle = (i / 40) * Math.PI * 2 + Math.random() * 0.4;
+          const dist = 70 + Math.random() * 140;
+          p.style.setProperty('--tx', (Math.cos(angle) * dist) + 'px');
+          p.style.setProperty('--ty', (Math.sin(angle) * dist) + 'px');
+          p.style.animation = 'burstFly 0.85s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards';
+          burst.appendChild(p);
+          setTimeout(() => p.remove(), 900);
+        }
+      }
+
       function enterSite() {
+        if (introScreen.classList.contains('hidden-out')) return;
+        createBurst();
         introScreen.classList.add('hidden-out');
         setTimeout(() => {
           introScreen.style.display = 'none';
